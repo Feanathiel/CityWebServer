@@ -51,7 +51,7 @@ namespace CityWebServer.RequestHandlers
 
             var content = String.Format("Income: {0:C}{2}Expenses: {1:C}", formattedIncome, formattedExpenses, Environment.NewLine);
 
-            return new PlainTextResponseFormatter(content, HttpStatusCode.OK);
+            return PlainTextResponse(content);
         }
     }
 }
