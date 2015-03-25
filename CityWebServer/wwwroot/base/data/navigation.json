@@ -1,6 +1,8 @@
 ﻿{
     "CityName": "CityWebServer",
     "Links": [
-        { "Title": "Home", "Url": "/" }
+        { "Title": "Home", "Url": "/" },
+        { "Title": "Districts", "Url": "/districts/" }
     ]
 }
+

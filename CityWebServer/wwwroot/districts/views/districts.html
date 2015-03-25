@@ -1,0 +1,45 @@
+﻿<div class="container">
+    <h2>Districts</h2>
+    <div id="chart"></div>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>District ID</th>
+                <th>Name</th>
+                <th>Population</th>
+                <th>Buildings</th>
+                <th>Vehicles</th>
+                <th>Households (Max)</th>
+                <th>Jobs (Max)</th>
+                <th>Weekly Tourists</th>
+                <th>Average Land Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="district in data.Districts">
+                <td>{{district.DistrictID}}</td>
+                <td>{{district.DistrictName}}</td>
+                <td>{{district.TotalPopulationCount}}</td>
+                <td>{{district.TotalBuildingCount}}</td>
+                <td>{{district.TotalVehicleCount}}</td>
+                <td>{{district.CurrentHouseholds}} ({{district.AvailableHouseholds}})</td>
+                <td>{{district.CurrentJobs}} ({{district.AvailableJobs}})</td>
+                <td>{{district.WeeklyTouristVisits}}</td>
+                <td>{{district.AverageLandValue}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td>Total</td>
+                <td>{{data.GlobalDistrict.TotalPopulationCount}}</td>
+                <td>{{data.GlobalDistrict.TotalBuildingCount}}</td>
+                <td>{{data.GlobalDistrict.TotalVehicleCount}}</td>
+                <td>{{data.GlobalDistrict.CurrentHouseholds}} ({{data.GlobalDistrict.AvailableHouseholds}})</td>
+                <td>{{data.GlobalDistrict.CurrentJobs}} ({{data.GlobalDistrict.AvailableJobs}})</td>
+                <td>{{data.GlobalDistrict.WeeklyTouristVisits}}</td>
+                <td>{{data.GlobalDistrict.AverageLandValue}}</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>

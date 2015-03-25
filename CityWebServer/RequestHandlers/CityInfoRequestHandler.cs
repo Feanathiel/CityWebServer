@@ -32,12 +32,12 @@ namespace CityWebServer.RequestHandlers
 
         public override String MainPath
         {
-            get { return "/CityInfo"; }
+            get { return "/Api/Districts/"; }
         }
 
         public override Boolean ShouldHandle(IRequestParameters request)
         {
-            return (request.Url.AbsolutePath.Equals("/CityInfo", StringComparison.OrdinalIgnoreCase));
+            return (request.Url.AbsolutePath.Equals("/Api/Districts/districts.json", StringComparison.OrdinalIgnoreCase));
         }
 
         private Dictionary<int, int> GetBuildingBreakdownByDistrict()

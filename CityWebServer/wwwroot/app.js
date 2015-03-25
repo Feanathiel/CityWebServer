@@ -4,7 +4,8 @@
 
 var app = angular.module('app', [
     'ngRoute',
-    'serverModule'
+    'serverModule',
+    'districtsModule'
 ]);
 
 app.config(['$routeProvider',
