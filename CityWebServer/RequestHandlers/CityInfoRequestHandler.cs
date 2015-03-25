@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using CityWebServer.Extensibility;
 using CityWebServer.Helpers;
 using CityWebServer.Models;
@@ -36,7 +35,7 @@ namespace CityWebServer.RequestHandlers
             get { return "/CityInfo"; }
         }
 
-        public override Boolean ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(IRequestParameters request)
         {
             return (request.Url.AbsolutePath.Equals("/CityInfo", StringComparison.OrdinalIgnoreCase));
         }
@@ -87,9 +86,9 @@ namespace CityWebServer.RequestHandlers
             return districtVehicles;
         }
 
-        public override IResponseFormatter Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(IRequestParameters request)
         {
-            if (request.QueryString.HasKey("showList"))
+            if (request.HasQueryStringKey("showList"))
             {
                 return HandleDistrictList();
             }
@@ -104,7 +103,7 @@ namespace CityWebServer.RequestHandlers
             return JsonResponse(districtIDs);
         }
 
-        private IResponseFormatter HandleDistrict(HttpListenerRequest request)
+        private IResponseFormatter HandleDistrict(IRequestParameters request)
         {
             var districtIDs = GetDistrictsFromRequest(request);
 
@@ -144,23 +143,28 @@ namespace CityWebServer.RequestHandlers
             return JsonResponse(cityInfo);
         }
 
-        private IEnumerable<int> GetDistrictsFromRequest(HttpListenerRequest request)
+        private IEnumerable<int> GetDistrictsFromRequest(IRequestParameters request)
         {
             IEnumerable<int> districtIDs;
-            if (request.QueryString.HasKey("districtID"))
+            
+            string value;
+            if (request.TryGetQueryStringValue("districtID", out value))
             {
                 List<int> districtIDList = new List<int>();
-                var districtID = request.QueryString.GetInteger("districtID");
-                if (districtID.HasValue)
+
+                int districtID;
+                if (int.TryParse(value, out districtID))
                 {
-                    districtIDList.Add(districtID.Value);
+                    districtIDList.Add(districtID);
                 }
+
                 districtIDs = districtIDList;
             }
             else
             {
                 districtIDs = DistrictInfo.GetDistricts();
             }
+
             return districtIDs;
         }
     }

@@ -26,12 +26,12 @@ namespace CityWebServer.Extensibility
         public override string Author { get { return _author; } }
         public override string MainPath { get { return _mainPath; } }
 
-        public override bool ShouldHandle(HttpListenerRequest request)
+        public override bool ShouldHandle(IRequestParameters request)
         {
             return (request.Url.AbsolutePath.StartsWith(_mainPath, StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponseFormatter Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(IRequestParameters request)
         {
             switch (request.HttpMethod)
             {
@@ -48,22 +48,22 @@ namespace CityWebServer.Extensibility
             }
         }
 
-        protected virtual IResponseFormatter HandleGetRequest(HttpListenerRequest request)
+        protected virtual IResponseFormatter HandleGetRequest(IRequestParameters request)
         {
             return JsonResponse("405 Method Not Allowed", HttpStatusCode.MethodNotAllowed);
         }
 
-        protected virtual IResponseFormatter HandlePostRequest(HttpListenerRequest request)
+        protected virtual IResponseFormatter HandlePostRequest(IRequestParameters request)
         {
             return JsonResponse("405 Method Not Allowed", HttpStatusCode.MethodNotAllowed);
         }
 
-        protected virtual IResponseFormatter HandlePutRequest(HttpListenerRequest request)
+        protected virtual IResponseFormatter HandlePutRequest(IRequestParameters request)
         {
             return JsonResponse("405 Method Not Allowed", HttpStatusCode.MethodNotAllowed);
         }
 
-        protected virtual IResponseFormatter HandleDeleteRequest(HttpListenerRequest request)
+        protected virtual IResponseFormatter HandleDeleteRequest(IRequestParameters request)
         {
             return JsonResponse("405 Method Not Allowed", HttpStatusCode.MethodNotAllowed);
         }

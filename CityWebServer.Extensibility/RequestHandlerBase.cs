@@ -37,12 +37,12 @@ namespace CityWebServer.Extensibility
         /// <summary>
         /// Returns a value that indicates whether this handler is capable of servicing the given request.
         /// </summary>
-        public abstract Boolean ShouldHandle(HttpListenerRequest request);
+        public abstract Boolean ShouldHandle(IRequestParameters request);
 
         /// <summary>
         /// Handles the specified request.  The method should not close the stream.
         /// </summary>
-        public abstract IResponseFormatter Handle(HttpListenerRequest request);
+        public abstract IResponseFormatter Handle(IRequestParameters request);
 
         /// <summary>
         /// Returns a response in JSON format.

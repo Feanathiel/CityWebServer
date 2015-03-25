@@ -45,12 +45,12 @@ namespace CityWebServer.RequestHandlers
 
         private readonly ChirpRetriever _chirpRetriever;
 
-        public override Boolean ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(IRequestParameters request)
         {
             return (request.Url.AbsolutePath.Equals("/Messages", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponseFormatter Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(IRequestParameters request)
         {
             // TODO: Customize request handling.
             var messages = _chirpRetriever.Messages;

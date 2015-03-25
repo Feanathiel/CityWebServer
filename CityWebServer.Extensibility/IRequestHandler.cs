@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 
 namespace CityWebServer.Extensibility
 {
@@ -39,11 +38,11 @@ namespace CityWebServer.Extensibility
         /// <summary>
         /// Returns a value that indicates whether this handler is capable of servicing the given request.
         /// </summary>
-        Boolean ShouldHandle(HttpListenerRequest request);
+        Boolean ShouldHandle(IRequestParameters request);
 
         /// <summary>
         /// Handles the specified request.  The method should not close the stream.
         /// </summary>
-        IResponseFormatter Handle(HttpListenerRequest request);
+        IResponseFormatter Handle(IRequestParameters request);
     }
 }

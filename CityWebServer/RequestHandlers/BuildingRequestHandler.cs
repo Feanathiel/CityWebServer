@@ -35,12 +35,12 @@ namespace CityWebServer.RequestHandlers
             get { return "/Building"; }
         }
 
-        public override Boolean ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(IRequestParameters request)
         {
             return (request.Url.AbsolutePath.StartsWith("/Building", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponseFormatter Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(IRequestParameters request)
         {
             var buildingManager = Singleton<BuildingManager>.instance;
 

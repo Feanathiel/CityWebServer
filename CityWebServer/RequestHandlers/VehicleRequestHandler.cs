@@ -34,12 +34,12 @@ namespace CityWebServer.RequestHandlers
             get { return "/Vehicle"; }
         }
 
-        public override Boolean ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(IRequestParameters request)
         {
             return (request.Url.AbsolutePath.StartsWith("/Vehicle", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponseFormatter Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(IRequestParameters request)
         {
             var vehicleManager = Singleton<VehicleManager>.instance;
 

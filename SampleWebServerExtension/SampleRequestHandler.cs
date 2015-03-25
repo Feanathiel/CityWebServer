@@ -32,12 +32,12 @@ namespace SampleWebServerExtension
             get { return "/Sample"; }
         }
 
-        public override Boolean ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(IRequestParameters request)
         {
             return (request.Url.AbsolutePath.Equals("/Sample", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponseFormatter Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(IRequestParameters request)
         {
             const String content = "This is a sample page!";
 

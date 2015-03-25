@@ -225,13 +225,15 @@ namespace CityWebServer
                 return;
             }
 
+            IRequestParameters requestParameters = new RequestParameters(request);
+
             // Get the request handler associated with the current request.
-            var handler = _requestHandlers.FirstOrDefault(obj => obj.ShouldHandle(request));
+            var handler = _requestHandlers.FirstOrDefault(obj => obj.ShouldHandle(requestParameters));
             if (handler != null)
             {
                 try
                 {
-                    IResponseFormatter responseFormatterWriter = handler.Handle(request);
+                    IResponseFormatter responseFormatterWriter = handler.Handle(requestParameters);
                     responseFormatterWriter.WriteContent(response);
 
                     return;

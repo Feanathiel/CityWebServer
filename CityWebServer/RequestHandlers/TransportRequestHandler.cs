@@ -35,12 +35,12 @@ namespace CityWebServer.RequestHandlers
             get { return "/Transport"; }
         }
 
-        public override Boolean ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(IRequestParameters request)
         {
             return (request.Url.AbsolutePath.Equals("/Transport", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponseFormatter Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(IRequestParameters request)
         {
             var transportManager = Singleton<TransportManager>.instance;
 
