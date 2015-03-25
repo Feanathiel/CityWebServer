@@ -5,7 +5,7 @@ using CityWebServer.Extensibility;
 
 namespace SampleWebServerExtension
 {
-    public class SampleHandler : BaseHandler
+    public class SampleRequestHandler : RequestHandlerBase
     {
         public override Guid HandlerID
         {
@@ -17,27 +17,27 @@ namespace SampleWebServerExtension
             get { return 100; }
         }
 
-        public override string Name
+        public override String Name
         {
             get { return "Sample"; }
         }
 
-        public override string Author
+        public override String Author
         {
             get { return "Rychard"; }
         }
 
-        public override string MainPath
+        public override String MainPath
         {
             get { return "/Sample"; }
         }
 
-        public override bool ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(HttpListenerRequest request)
         {
             return (request.Url.AbsolutePath.Equals("/Sample", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponse Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(HttpListenerRequest request)
         {
             const String content = "This is a sample page!";
 

@@ -5,7 +5,7 @@ using CityWebServer.Retrievers;
 
 namespace CityWebServer.RequestHandlers
 {
-    public class MessageRequestHandler : BaseHandler, ILogAppender
+    public class MessageRequestHandler : RequestHandlerBase, ILogAppender
     {
         public event EventHandler<LogAppenderEventArgs> LogMessage;
 
@@ -28,29 +28,29 @@ namespace CityWebServer.RequestHandlers
             get { return 100; }
         }
 
-        public override string Name
+        public override String Name
         {
             get { return "Chirper Messages"; }
         }
 
-        public override string Author
+        public override String Author
         {
             get { return "Rychard"; }
         }
 
-        public override string MainPath
+        public override String MainPath
         {
             get { return "/Messages"; }
         }
 
         private readonly ChirpRetriever _chirpRetriever;
 
-        public override bool ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(HttpListenerRequest request)
         {
             return (request.Url.AbsolutePath.Equals("/Messages", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponse Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(HttpListenerRequest request)
         {
             // TODO: Customize request handling.
             var messages = _chirpRetriever.Messages;

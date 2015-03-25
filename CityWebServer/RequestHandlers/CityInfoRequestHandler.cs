@@ -9,7 +9,7 @@ using ColossalFramework;
 
 namespace CityWebServer.RequestHandlers
 {
-    public class CityInfoRequestHandler : BaseHandler
+    public class CityInfoRequestHandler : RequestHandlerBase
     {
         public override Guid HandlerID
         {
@@ -21,22 +21,22 @@ namespace CityWebServer.RequestHandlers
             get { return 100; }
         }
 
-        public override string Name
+        public override String Name
         {
             get { return "City Info"; }
         }
 
-        public override string Author
+        public override String Author
         {
             get { return "Rychard"; }
         }
 
-        public override string MainPath
+        public override String MainPath
         {
             get { return "/CityInfo"; }
         }
 
-        public override bool ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(HttpListenerRequest request)
         {
             return (request.Url.AbsolutePath.Equals("/CityInfo", StringComparison.OrdinalIgnoreCase));
         }
@@ -87,7 +87,7 @@ namespace CityWebServer.RequestHandlers
             return districtVehicles;
         }
 
-        public override IResponse Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(HttpListenerRequest request)
         {
             if (request.QueryString.HasKey("showList"))
             {
@@ -97,14 +97,14 @@ namespace CityWebServer.RequestHandlers
             return HandleDistrict(request);
         }
 
-        private IResponse HandleDistrictList()
+        private IResponseFormatter HandleDistrictList()
         {
             var districtIDs = DistrictInfo.GetDistricts().ToArray();
 
             return JsonResponse(districtIDs);
         }
 
-        private IResponse HandleDistrict(HttpListenerRequest request)
+        private IResponseFormatter HandleDistrict(HttpListenerRequest request)
         {
             var districtIDs = GetDistrictsFromRequest(request);
 

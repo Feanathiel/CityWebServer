@@ -22,6 +22,7 @@ namespace CityWebServer
         private static readonly Type RequestHandlerType = typeof(IRequestHandler);
 
         private static List<String> _logLines;
+        private static string _endpoint;
 
         private WebServer _server;
         private List<IRequestHandler> _requestHandlers;
@@ -48,7 +49,13 @@ namespace CityWebServer
             "UnityEngine.UI",
         };
 
-        public static String Endpoint { get; private set; }
+        /// <summary>
+        /// Gets the root endpoint for which the server is configured to service HTTP requests.
+        /// </summary>
+        public static String Endpoint
+        {
+            get { return _endpoint; }
+        }
 
         /// <summary>
         /// Gets the full path to the directory where static pages are served from.
@@ -66,6 +73,14 @@ namespace CityWebServer
                 }
             }
             return null;
+        }
+
+        /// <summary>
+        /// Gets an array containing all currently registered request handlers.
+        /// </summary>
+        public IRequestHandler[] RequestHandlers
+        {
+            get { return _requestHandlers.ToArray(); }
         }
 
         /// <summary>
@@ -143,7 +158,7 @@ namespace CityWebServer
             }
 
             String endpoint = String.Format("http://localhost:{0}/", port);
-            Endpoint = endpoint;
+            _endpoint = endpoint;
 
             WebServer ws = new WebServer(HandleRequest, endpoint);
             _server = ws;
@@ -216,8 +231,8 @@ namespace CityWebServer
             {
                 try
                 {
-                    IResponse responseWriter = handler.Handle(request);
-                    responseWriter.WriteContent(response);
+                    IResponseFormatter responseFormatterWriter = handler.Handle(request);
+                    responseFormatterWriter.WriteContent(response);
 
                     return;
                 }
@@ -227,8 +242,8 @@ namespace CityWebServer
                     var tokens = TemplateHelper.GetTokenReplacements(_cityName, "Error", _requestHandlers, errorBody);
                     var template = TemplateHelper.PopulateTemplate("index", tokens);
 
-                    IResponse errorResponse = new HtmlResponse(template);
-                    errorResponse.WriteContent(response);
+                    IResponseFormatter errorResponseFormatter = new HtmlResponseFormatter(template);
+                    errorResponseFormatter.WriteContent(response);
 
                     return;
                 }
@@ -240,7 +255,7 @@ namespace CityWebServer
             ServiceFileRequest(wwwroot, request, response);
         }
 
-        private static void ServiceFileRequest(string wwwroot, HttpListenerRequest request, HttpListenerResponse response)
+        private static void ServiceFileRequest(String wwwroot, HttpListenerRequest request, HttpListenerResponse response)
         {
             var relativePath = request.Url.AbsolutePath.Substring(1);
             relativePath = relativePath.Replace("/", Path.DirectorySeparatorChar.ToString());
@@ -267,8 +282,8 @@ namespace CityWebServer
             {
                 String body = String.Format("No resource is available at the specified filepath: {0}", absolutePath);
 
-                IResponse notFoundResponse = new PlainTextResponse(body, HttpStatusCode.NotFound);
-                notFoundResponse.WriteContent(response);
+                IResponseFormatter notFoundResponseFormatter = new PlainTextResponseFormatter(body, HttpStatusCode.NotFound);
+                notFoundResponseFormatter.WriteContent(response);
             }
         }
 
@@ -313,11 +328,22 @@ namespace CityWebServer
                 }
                 else
                 {
-                    // TODO: Add event handler for any handler that implements the ILogAppender interface.
                     _requestHandlers.Add(handlerInstance);
+                    if (handlerInstance is ILogAppender)
+                    {
+                        var logAppender = (handlerInstance as ILogAppender);
+                        logAppender.LogMessage += RequestHandlerLogAppender_OnLogMessage;
+                    }
+
                     LogMessage(String.Format("Added Request Handler: {0}", handler.FullName));
                 }
             }
+        }
+
+        private void RequestHandlerLogAppender_OnLogMessage(object sender, LogAppenderEventArgs logAppenderEventArgs)
+        {
+            var senderTypeName = sender.GetType().Name;
+            LogMessage(logAppenderEventArgs.LogLine, senderTypeName, false);
         }
 
         /// <summary>
@@ -377,7 +403,7 @@ namespace CityWebServer
         {
             if (request.Url.AbsolutePath.ToLower() == "/")
             {
-                List<String> links = new List<string>();
+                List<String> links = new List<String>();
                 foreach (var requestHandler in this._requestHandlers.OrderBy(obj => obj.Priority))
                 {
                     links.Add(String.Format("<li><a href='{1}'>{0}</a> by {2} (Priority: {3})</li>", requestHandler.Name, requestHandler.MainPath, requestHandler.Author, requestHandler.Priority));
@@ -387,8 +413,8 @@ namespace CityWebServer
                 var tokens = TemplateHelper.GetTokenReplacements(_cityName, "Home", _requestHandlers, body);
                 var template = TemplateHelper.PopulateTemplate("index", tokens);
 
-                IResponse htmlResponse = new HtmlResponse(template);
-                htmlResponse.WriteContent(response);
+                IResponseFormatter htmlResponseFormatter = new HtmlResponseFormatter(template);
+                htmlResponseFormatter.WriteContent(response);
 
                 return true;
             }
@@ -408,8 +434,8 @@ namespace CityWebServer
                     var tokens = TemplateHelper.GetTokenReplacements(_cityName, "Log", _requestHandlers, body);
                     var template = TemplateHelper.PopulateTemplate("index", tokens);
 
-                    IResponse htmlResponse = new HtmlResponse(template);
-                    htmlResponse.WriteContent(response);
+                    IResponseFormatter htmlResponseFormatter = new HtmlResponseFormatter(template);
+                    htmlResponseFormatter.WriteContent(response);
 
                     return true;
                 }

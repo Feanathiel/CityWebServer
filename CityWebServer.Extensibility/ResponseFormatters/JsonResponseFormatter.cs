@@ -3,12 +3,12 @@ using System.Text;
 
 namespace CityWebServer.Extensibility.Responses
 {
-    internal class JsonResponse<T> : IResponse
+    internal class JsonResponseFormatter<T> : IResponseFormatter
     {
         private readonly T _content;
         private readonly HttpStatusCode _statusCode;
 
-        public JsonResponse(T content, HttpStatusCode statusCode)
+        public JsonResponseFormatter(T content, HttpStatusCode statusCode)
         {
             _content = content;
             _statusCode = statusCode;

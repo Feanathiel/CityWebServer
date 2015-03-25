@@ -1,14 +1,15 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Text;
 
 namespace CityWebServer.Extensibility.Responses
 {
-    internal class HtmlResponse : IResponse
+    internal class HtmlResponseFormatter : IResponseFormatter
     {
-        private readonly string _content;
+        private readonly String _content;
         private readonly HttpStatusCode _statusCode;
 
-        public HtmlResponse(string content, HttpStatusCode statusCode = HttpStatusCode.OK)
+        public HtmlResponseFormatter(String content, HttpStatusCode statusCode = HttpStatusCode.OK)
         {
             _content = content;
             _statusCode = statusCode;

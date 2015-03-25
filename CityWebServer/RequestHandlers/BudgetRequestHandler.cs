@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Net;
 using CityWebServer.Extensibility;
+using CityWebServer.Extensibility.Responses;
 using ColossalFramework;
 
 namespace CityWebServer.RequestHandlers
 {
-    public class BudgetRequestHandler : BaseHandler
+    public class BudgetRequestHandler : RequestHandlerBase
     {
         public override Guid HandlerID
         {
@@ -17,27 +18,27 @@ namespace CityWebServer.RequestHandlers
             get { return 100; }
         }
 
-        public override string Name
+        public override String Name
         {
             get { return "Budget"; }
         }
 
-        public override string Author
+        public override String Author
         {
             get { return "Rychard"; }
         }
 
-        public override string MainPath
+        public override String MainPath
         {
             get { return "/Budget"; }
         }
 
-        public override bool ShouldHandle(HttpListenerRequest request)
+        public override Boolean ShouldHandle(HttpListenerRequest request)
         {
             return (request.Url.AbsolutePath.Equals("/Budget", StringComparison.OrdinalIgnoreCase));
         }
 
-        public override IResponse Handle(HttpListenerRequest request)
+        public override IResponseFormatter Handle(HttpListenerRequest request)
         {
             // TODO: Expand upon this to expose substantially more information.
             var economyManager = Singleton<EconomyManager>.instance;
@@ -50,7 +51,7 @@ namespace CityWebServer.RequestHandlers
 
             var content = String.Format("Income: {0:C}{2}Expenses: {1:C}", formattedIncome, formattedExpenses, Environment.NewLine);
 
-            return HtmlResponse(content);
+            return new PlainTextResponseFormatter(content, HttpStatusCode.OK);
         }
     }
 }
