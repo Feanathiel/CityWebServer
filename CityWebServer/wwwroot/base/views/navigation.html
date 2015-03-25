@@ -1,0 +1,16 @@
+﻿<div ng-controller="NavCtrl">
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" ng-href="#/"><span>{{CityName}}</span></a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li ng-repeat="link in Links">
+                        <a ng-href="#{{link.Url}}">{{link.Title}}</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>

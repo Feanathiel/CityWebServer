@@ -1,0 +1,6 @@
+﻿{
+    "CityName": "CityWebServer",
+    "Links": [
+        { "Title": "Home", "Url": "/" }
+    ]
+}
