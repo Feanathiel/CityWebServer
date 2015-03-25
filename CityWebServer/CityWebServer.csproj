@@ -62,7 +62,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\ApacheMimeTypes.cs" />
-    <Compile Include="Helpers\CitizenExtensions.cs" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\DistrictExtensions.cs" />
     <Compile Include="Helpers\EnumExtensions.cs" />

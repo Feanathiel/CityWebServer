@@ -3,7 +3,7 @@ using CityWebServer.Models;
 
 namespace CityWebServer.Helpers
 {
-    public static class DistrictExtensions
+    internal static class DistrictExtensions
     {
         public static Boolean IsValid(this District district)
         {

@@ -7,7 +7,7 @@ using JsonFx.Serialization;
 
 namespace CityWebServer.Helpers
 {
-    public static class Configuration
+    internal static class Configuration
     {
         private static readonly Object LockerObject = new Object();
         private static readonly String _filePath;

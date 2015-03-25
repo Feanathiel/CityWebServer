@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CityWebServer.Helpers
 {
-    public static class EnumHelper
+    internal static class EnumHelper
     {
         public static IEnumerable<T> GetValues<T>()
         {

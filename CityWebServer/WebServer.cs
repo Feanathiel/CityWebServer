@@ -9,28 +9,30 @@ namespace CityWebServer
         private readonly HttpListener _listener = new HttpListener();
         private readonly Action<HttpListenerRequest, HttpListenerResponse> _responderMethod;
 
-        public WebServer(String[] prefixes, Action<HttpListenerRequest, HttpListenerResponse> method)
+        public WebServer(Action<HttpListenerRequest, HttpListenerResponse> method, String prefix)
         {
-            if (!HttpListener.IsSupported) { throw new NotSupportedException("This wouldn't happen if you upgraded your operating system more than once a decade."); }
+            if (!HttpListener.IsSupported)
+            {
+                throw new NotSupportedException("This wouldn't happen if you upgraded your operating system more than once a decade.");
+            }
 
-            // URI prefixes are required, for example:
+            // URI prefix is required, for example:
             // "http://localhost:8080/index/".
-            if (prefixes == null || prefixes.Length == 0) { throw new ArgumentException("prefixes"); }
+            if (string.IsNullOrEmpty(prefix))
+            {
+                throw new ArgumentNullException("prefix");
+            }
 
             // A responder method is required
-            if (method == null) { throw new ArgumentException("method"); }
-
-            foreach (String s in prefixes)
+            if (method == null)
             {
-                _listener.Prefixes.Add(s);
+                throw new ArgumentNullException("method");
             }
+
+            _listener.Prefixes.Add(prefix);
 
             _responderMethod = method;
             _listener.Start();
-        }
-
-        public WebServer(Action<HttpListenerRequest, HttpListenerResponse> method, params String[] prefixes) : this(prefixes, method)
-        {
         }
 
         public void Run()
@@ -44,35 +46,40 @@ namespace CityWebServer
                         ThreadPool.QueueUserWorkItem(RequestHandlerCallback, _listener.GetContext());
                     }
                 }
-                catch { } // Suppress exceptions.
+                catch
+                {
+                    // Suppress exceptions.
+                }
             });
         }
 
         private void RequestHandlerCallback(Object context)
         {
             var ctx = context as HttpListenerContext;
+
+            if (ctx == null)
+            {
+                return;
+            }
+
             try
             {
-                if (ctx != null)
-                {
-                    var request = ctx.Request;
-                    var response = ctx.Response;
-                    
-                    // Allow accessing pages from pages hosted from another local web-server, such as IIS, for instance.
-                    response.AddHeader("Access-Control-Allow-Origin", "http://localhost");
+                var request = ctx.Request;
+                var response = ctx.Response;
 
-                    _responderMethod(request, response);    
-                    
-                }
+                // Allow accessing pages from pages hosted from another local web-server, such as IIS, for instance.
+                response.AddHeader("Access-Control-Allow-Origin", "http://localhost");
+
+                this._responderMethod(request, response);
             }
-            catch { } // Suppress any exceptions.
+            catch
+            {
+                // Suppress any exceptions.
+            }
             finally
             {
-                if (ctx != null)
-                {
-                    // Ensure that the stream is never left open.
-                    ctx.Response.OutputStream.Close();
-                }
+                // Ensure that the stream is never left open.
+                ctx.Response.OutputStream.Close();
             }
         }
 

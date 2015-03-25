@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Net;
 using CityWebServer.Extensibility;
-using CityWebServer.Extensibility.Responses;
 using ColossalFramework;
 
 namespace CityWebServer.RequestHandlers

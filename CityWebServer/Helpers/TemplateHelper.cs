@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CityWebServer.Extensibility;
-using ColossalFramework;
-using ColossalFramework.IO;
 using ColossalFramework.Plugins;
 
 namespace CityWebServer.Helpers
 {
-    public static class TemplateHelper
+    internal static class TemplateHelper
     {
         /// <summary>
         /// Gets the full path of the directory that contains this assembly.
