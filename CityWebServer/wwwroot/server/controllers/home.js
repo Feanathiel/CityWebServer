@@ -1,5 +1,7 @@
 ﻿'use strict';
 
-app.controller('HomeCtrl', function ($scope) {
-    // Nothing for the moment
+define(['server/module'], function (serverModule) {
+    serverModule.controller('HomeCtrl', function ($scope) {
+        // Nothing for the moment
+    });
 });

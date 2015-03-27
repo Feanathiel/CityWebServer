@@ -1,20 +1,26 @@
 ﻿'use strict';
 
-districtsModule.controller('DistrictsCtrl', function ($scope, Districts, $interval) {
+define([
+    'districts/module',
+    'districts/assets/js/script'
+], function (districtsModule) {
+    districtsModule.controller('DistrictsCtrl', function ($scope, Districts, $interval) {
+        var chart = initializeChart($scope);
 
-    var chart = initializeChart($scope);
+        this.loadDistricts = function () {
+            Districts.getDistricts().then(function (data) {
+                $scope.data = data.data;
 
-    this.loadDistricts = function () {
-        Districts.getDistricts().then(function(data) {
-            $scope.data = data.data;
+                updateChart($scope.data, chart);
+            });
+        };
 
-            updateChart($scope.data, chart);
-        });
-    };
+        $interval(function () {
+            this.loadDistricts();
+        }.bind(this), 2000);
 
-    $interval(function() {
         this.loadDistricts();
-    }.bind(this), 2000);
-
-    this.loadDistricts();
+    });
 });
+
+
