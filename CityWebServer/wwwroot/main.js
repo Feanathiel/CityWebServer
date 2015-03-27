@@ -7,7 +7,9 @@ require.config({
     },
     shim: {
         'angular': { 'exports': 'angular' },
-        'angularRoute': {'exports': 'angular'}
+        'angularRoute': {
+            deps: ['angular']
+        }
     }
 });
 
