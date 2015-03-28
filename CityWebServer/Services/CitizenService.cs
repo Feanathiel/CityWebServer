@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using CityWebServer.Models;
@@ -13,6 +12,7 @@ namespace CityWebServer.Services
     internal class CitizenService
     {
         private readonly DistrictManager _districtManager;
+        private readonly CitizenManager _citizenManager;
 
         /// <summary>
         /// Creates a new instance of the <see cref="CitizenService"/>.
@@ -20,6 +20,7 @@ namespace CityWebServer.Services
         public CitizenService()
         {
             _districtManager = Singleton<DistrictManager>.instance;
+            _citizenManager = Singleton<CitizenManager>.instance;
         }
 
         /// <summary>
@@ -66,7 +67,7 @@ namespace CityWebServer.Services
                 .Select(x => new
                 {
                     x.EducationLevel,
-                    IsEmployed = IsEmployed(x)
+                    IsEmployed = !Is(x, Citizen.Flags.Unemployed)
                 })
                 .GroupBy(x => x.EducationLevel)
                 .ToDictionary(x => x.Key, x => new Employment
@@ -109,9 +110,9 @@ namespace CityWebServer.Services
             return educationEmployment;
         }
 
-        private static IEnumerable<Citizen> GetValidCitizens()
+        private IEnumerable<Citizen> GetValidCitizens()
         {
-            Citizen[] gameCitizens = Singleton<CitizenManager>.instance.m_citizens.m_buffer;
+            Citizen[] gameCitizens = _citizenManager.m_citizens.m_buffer;
 
             IList<Citizen> validCitizens = new List<Citizen>();
 
@@ -129,21 +130,6 @@ namespace CityWebServer.Services
             }
 
             return validCitizens;
-        }
-
-        private static bool IsDead(Citizen citizen)
-        {
-            return (citizen.m_flags & Citizen.Flags.Dead) == Citizen.Flags.Dead;
-        }
-
-        private static bool IsCreated(Citizen citizen)
-        {
-            return (citizen.m_flags & Citizen.Flags.Created) == Citizen.Flags.Created;
-        }
-
-        private static bool IsEmployed(Citizen citizen)
-        {
-            return !((citizen.m_flags & Citizen.Flags.Unemployed) == Citizen.Flags.Unemployed);
         }
 
         private static bool Is(Citizen citizen, Citizen.Flags flags)
