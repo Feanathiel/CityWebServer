@@ -71,6 +71,7 @@
     <Compile Include="Models\CityInfo.cs" />
     <Compile Include="Models\DistrictInfo.cs" />
     <Compile Include="Models\Economy.cs" />
+    <Compile Include="Models\Employment.cs" />
     <Compile Include="Models\PolicyInfo.cs" />
     <Compile Include="Models\PopulationGroup.cs" />
     <Compile Include="RequestHandlers\BudgetRequestHandler.cs" />
@@ -87,6 +88,7 @@
     <Compile Include="Services\CitizenService.cs" />
     <Compile Include="Models\AgeDistribution.cs" />
     <Compile Include="Services\GameService.cs" />
+    <Compile Include="Models\EducationEmployment.cs" />
     <Compile Include="UserModInfo.cs" />
     <Compile Include="WebServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -94,9 +96,9 @@
     <Compile Include="WebsiteButton.cs" />
   </ItemGroup>
   <ItemGroup>
-	<Content Include="wwwroot\**">
-	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	</Content>
+    <Content Include="wwwroot\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CityWebServer.Extensibility\CityWebServer.Extensibility.csproj">

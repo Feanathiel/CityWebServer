@@ -5,5 +5,6 @@ define([
     'citizen/controllers/citizen',
     'citizen/controllers/population',
     'citizen/controllers/ageDistribution',
-    'citizen/controllers/birthAndDeath'
+    'citizen/controllers/birthAndDeath',
+    'citizen/controllers/educationEmployment'
 ], function () { });

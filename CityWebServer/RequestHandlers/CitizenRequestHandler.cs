@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using CityWebServer.Extensibility;
 using CityWebServer.Models;
@@ -19,7 +20,7 @@ namespace CityWebServer.RequestHandlers
         /// </summary>
         public override Guid HandlerID
         {
-            get { return new Guid("eeada0d0-f1d2-43b0-9595-2a6a4d917631"); }
+            get { return new Guid("E0A1510B-0910-422F-B67A-DD2AE80EC950"); }
         }
 
         /// <summary>
@@ -67,7 +68,8 @@ namespace CityWebServer.RequestHandlers
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
             {
                 HandleAgeGroupDistribution,
-                HandleBirthAndDateRate
+                HandleBirthAndDateRate,
+                HandleEducationEmployment
             };
 
             _gameService = new GameService();
@@ -131,6 +133,26 @@ namespace CityWebServer.RequestHandlers
             };
 
             return JsonResponse(result);
+        }
+
+        private IResponseFormatter HandleEducationEmployment(IRequestParameters request)
+        {
+            if (!request.Url.AbsolutePath.Equals(MainPath + "EducationEmployment.json", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            DateTime gameTime = _gameService.GetGameTime();
+            EducationEmployment educationEmployment = _citizenService.GetEducationEmploymentRate();
+
+            var result = new
+            {
+                GameTime = gameTime,
+                EducationEmployment = educationEmployment
+            };
+
+            return JsonResponse(result);
+            
         }
 
         /// <summary>

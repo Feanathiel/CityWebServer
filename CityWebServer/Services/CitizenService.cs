@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using CityWebServer.Models;
 using ColossalFramework;
 
@@ -53,6 +56,99 @@ namespace CityWebServer.Services
             };
 
             return rate;
+        }
+
+        public EducationEmployment GetEducationEmploymentRate()
+        {
+            IEnumerable<Citizen> citizens = GetValidCitizens();
+
+            var eduRate = citizens
+                .Select(x => new
+                {
+                    x.EducationLevel,
+                    IsEmployed = IsEmployed(x)
+                })
+                .GroupBy(x => x.EducationLevel)
+                .ToDictionary(x => x.Key, x => new Employment
+                {
+                    Employed = x.Count(y => y.IsEmployed),
+                    Unemployed = x.Count(y => !y.IsEmployed)
+                });
+
+            var educationEmployment = new EducationEmployment
+            {
+                Uneducated = new Employment(),
+                Elementary = new Employment(),
+                HighSchool = new Employment(),
+                University = new Employment()
+            };
+
+            foreach (var employmentPair in eduRate)
+            {
+                Citizen.Education level = employmentPair.Key;
+                Employment employment = employmentPair.Value;
+
+                switch (level)
+                {
+
+                    case Citizen.Education.Uneducated:
+                        educationEmployment.Uneducated = employment;
+                        break;
+                    case Citizen.Education.OneSchool:
+                        educationEmployment.Elementary = employment;
+                        break;
+                    case Citizen.Education.TwoSchools:
+                        educationEmployment.HighSchool = employment;
+                        break;
+                    case Citizen.Education.ThreeSchools:
+                        educationEmployment.University = employment;
+                        break;
+                }
+            }
+
+            return educationEmployment;
+        }
+
+        private static IEnumerable<Citizen> GetValidCitizens()
+        {
+            Citizen[] gameCitizens = Singleton<CitizenManager>.instance.m_citizens.m_buffer;
+
+            IList<Citizen> validCitizens = new List<Citizen>();
+
+            foreach (var citizen in gameCitizens)
+            {
+                if (citizen.m_instance != 0 &&
+                    !citizen.Dead &&
+                    Is(citizen, Citizen.Flags.Created) &&
+                    !Is(citizen, Citizen.Flags.DummyTraffic) &&
+                    !Is(citizen, Citizen.Flags.Tourist) &&
+                    !Is(citizen, Citizen.Flags.MovingIn))
+                {
+                    validCitizens.Add(citizen);
+                }
+            }
+
+            return validCitizens;
+        }
+
+        private static bool IsDead(Citizen citizen)
+        {
+            return (citizen.m_flags & Citizen.Flags.Dead) == Citizen.Flags.Dead;
+        }
+
+        private static bool IsCreated(Citizen citizen)
+        {
+            return (citizen.m_flags & Citizen.Flags.Created) == Citizen.Flags.Created;
+        }
+
+        private static bool IsEmployed(Citizen citizen)
+        {
+            return !((citizen.m_flags & Citizen.Flags.Unemployed) == Citizen.Flags.Unemployed);
+        }
+
+        private static bool Is(Citizen citizen, Citizen.Flags flags)
+        {
+            return (citizen.m_flags & flags) == flags;
         }
     }
 }

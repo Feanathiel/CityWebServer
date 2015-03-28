@@ -2,6 +2,7 @@
     <h2>Citizen</h2>
     <i>Note: this is random data, and not actual game data.</i>
 
+    <h3>Population</h3>
     <div class="row">
         <div class="col-md-6" ng-controller="PopulationCtrl as vm">
             <highchart config="populationChartConfig"></highchart>
@@ -13,6 +14,15 @@
     <div class="row">
         <div class="col-md-6" ng-controller="BirthAndDeathCtrl as vm">
             <highchart config="birthAndDeathChartConfig"></highchart>
+        </div>
+        <div class="col-md-6">
+        </div>
+    </div>
+
+    <h3>Employment</h3>
+    <div class="row">
+        <div class="col-md-6" ng-controller="EducationEmploymentCtrl as vm">
+            <highchart config="educationEmploymentChartConfig"></highchart>
         </div>
         <div class="col-md-6">
         </div>

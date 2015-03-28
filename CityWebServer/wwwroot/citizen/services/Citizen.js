@@ -12,6 +12,11 @@ define(['citizen/module'], function (module) {
                 return $http.get("/Api/Citizen/BirthAndDeath.json").success(function (response) {
                     return response.data;
                 });
+            },
+            getEducationEmploymentRate: function () {
+                return $http.get("/Api/Citizen/EducationEmployment.json").success(function (response) {
+                    return response.data;
+                });
             }
         }
     });
