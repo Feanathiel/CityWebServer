@@ -5,7 +5,8 @@ define([
         'angularRoute',
         /* Need to load these dynamically somehow */
         'server/index',
-        'districts/index'
+        'districts/index',
+        'citizen/index'
     ],
     function (angular, angularRoute) {
 
@@ -13,7 +14,8 @@ define([
             'ngRoute',
             /* Need to load these dynamically somehow */
             'serverModule',
-            'districtsModule'
+            'districtsModule',
+            'citizenModule'
         ]);
 
         app.config([

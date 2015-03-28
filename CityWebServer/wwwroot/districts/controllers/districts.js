@@ -15,11 +15,15 @@ define([
             });
         };
 
-        $interval(function () {
+        var promise = $interval(function () {
             this.loadDistricts();
         }.bind(this), 2000);
 
         this.loadDistricts();
+
+        $scope.$on('$destroy', function () {
+            $interval.cancel(promise);
+        });
     });
 });
 

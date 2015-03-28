@@ -75,6 +75,7 @@
     <Compile Include="Models\PopulationGroup.cs" />
     <Compile Include="RequestHandlers\BudgetRequestHandler.cs" />
     <Compile Include="RequestHandlers\BuildingRequestHandler.cs" />
+    <Compile Include="RequestHandlers\CitizenRequestHandler.cs" />
     <Compile Include="RequestHandlers\MessageRequestHandler.cs" />
     <Compile Include="RequestHandlers\CityInfoRequestHandler.cs" />
     <Compile Include="Models\PublicTransportLine.cs" />
@@ -82,6 +83,9 @@
     <Compile Include="RequestHandlers\VehicleRequestHandler.cs" />
     <Compile Include="RequestParameters.cs" />
     <Compile Include="Retrievers\ChirpRetriever.cs" />
+    <Compile Include="Services\CitizenService.cs" />
+    <Compile Include="Models\AgeDistribution.cs" />
+    <Compile Include="Services\GameService.cs" />
     <Compile Include="UserModInfo.cs" />
     <Compile Include="WebServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
