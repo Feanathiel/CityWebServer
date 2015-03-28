@@ -1,5 +1,7 @@
 ﻿'use strict';
 
 define([
-    'server/controllers/home'
+    'server/services/Log',
+    'server/controllers/home',
+    'server/controllers/log'
 ], function () { });

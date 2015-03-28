@@ -16,6 +16,10 @@ define([
                 when('/', {
                     templateUrl: 'server/views/home.html',
                     controller: 'HomeCtrl'
+                })
+                .when('/log/', {
+                    templateUrl: 'server/views/log.html',
+                    controller: 'LogCtrl'
                 });
         }
     ]);

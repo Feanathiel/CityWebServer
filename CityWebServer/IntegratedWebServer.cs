@@ -428,20 +428,17 @@ namespace CityWebServer
         /// <summary>
         /// Services requests to <c>~/Log</c>
         /// </summary>
-        private Boolean ServiceLog(HttpListenerRequest request, HttpListenerResponse response)
+        private static Boolean ServiceLog(HttpListenerRequest request, HttpListenerResponse response)
         {
-            if (request.Url.AbsolutePath.ToLower() == "/log")
+            if (request.Url.AbsolutePath.ToUpperInvariant() == "/API/SERVER/LOGLINES.JSON")
             {
-                {
-                    String body = String.Format("<h1>Server Log</h1><pre>{0}</pre>", String.Join("", _logLines.ToArray()));
-                    var tokens = TemplateHelper.GetTokenReplacements(_cityName, "Log", _requestHandlers, body);
-                    var template = TemplateHelper.PopulateTemplate("index", tokens);
+                IResponseFormatter formatter = new JsonResponseFormatter<IEnumerable<String>>(
+                    _logLines.ToList(),
+                    HttpStatusCode.OK);
 
-                    IResponseFormatter htmlResponseFormatter = new HtmlResponseFormatter(template);
-                    htmlResponseFormatter.WriteContent(response);
+                formatter.WriteContent(response);
 
-                    return true;
-                }
+                return true;
             }
 
             return false;
