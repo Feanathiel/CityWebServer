@@ -7,6 +7,11 @@ define(['citizen/module'], function (module) {
                 return $http.get("/Api/Citizen/Age.json").success(function (response) {
                     return response.data;
                 });
+            },
+            getBirthAndDeathRate: function () {
+                return $http.get("/Api/Citizen/BirthAndDeath.json").success(function (response) {
+                    return response.data;
+                });
             }
         }
     });

@@ -66,7 +66,8 @@ namespace CityWebServer.RequestHandlers
         {
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
             {
-                IsAgeGroupDistribution
+                HandleAgeGroupDistribution,
+                HandleBirthAndDateRate
             };
 
             _gameService = new GameService();
@@ -94,7 +95,7 @@ namespace CityWebServer.RequestHandlers
         /// <summary>
         /// Gets the age distribution of the currently loaded city.
         /// </summary>
-        private IResponseFormatter IsAgeGroupDistribution(IRequestParameters request)
+        private IResponseFormatter HandleAgeGroupDistribution(IRequestParameters request)
         {
             if (!request.Url.AbsolutePath.Equals(MainPath + "Age.json", StringComparison.OrdinalIgnoreCase))
             {
@@ -108,6 +109,25 @@ namespace CityWebServer.RequestHandlers
             {
                 GameTime = gameTime,
                 Distribution = distribution
+            };
+
+            return JsonResponse(result);
+        }
+
+        private IResponseFormatter HandleBirthAndDateRate(IRequestParameters request)
+        {
+            if (!request.Url.AbsolutePath.Equals(MainPath + "BirthAndDeath.json", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            DateTime gameTime = _gameService.GetGameTime();
+            BirthAndDeathRate rate = _citizenService.GetBirthAndDeathRate();
+
+            var result = new
+            {
+                GameTime = gameTime,
+                Rate = rate
             };
 
             return JsonResponse(result);

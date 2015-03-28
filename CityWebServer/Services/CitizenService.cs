@@ -39,5 +39,20 @@ namespace CityWebServer.Services
 
             return ageDistribution;
         }
+
+        public BirthAndDeathRate GetBirthAndDeathRate()
+        {
+            const int globalDistrictId = 0;
+
+            District district = _districtManager.m_districts.m_buffer[globalDistrictId];
+
+            BirthAndDeathRate rate = new BirthAndDeathRate
+            {
+                Birth = (int) district.m_birthData.m_finalCount,
+                Death = (int) district.m_deathData.m_finalCount
+            };
+
+            return rate;
+        }
     }
 }

@@ -83,6 +83,7 @@
     <Compile Include="RequestHandlers\VehicleRequestHandler.cs" />
     <Compile Include="RequestParameters.cs" />
     <Compile Include="Retrievers\ChirpRetriever.cs" />
+    <Compile Include="Models\BirthAndDeathRate.cs" />
     <Compile Include="Services\CitizenService.cs" />
     <Compile Include="Models\AgeDistribution.cs" />
     <Compile Include="Services\GameService.cs" />
