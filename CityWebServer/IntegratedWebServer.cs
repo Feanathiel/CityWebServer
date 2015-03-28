@@ -121,6 +121,7 @@ namespace CityWebServer
         private void OnAppDomainUnload(object sender, EventArgs e)
         {
             // TODO: Unload handlers
+            _requestHandlers.Clear();
         }
 
         private void OnAssemblyLoad(object sender, AssemblyLoadEventArgs args)

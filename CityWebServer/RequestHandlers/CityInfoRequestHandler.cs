@@ -37,7 +37,7 @@ namespace CityWebServer.RequestHandlers
 
         public override Boolean ShouldHandle(IRequestParameters request)
         {
-            return (request.Url.AbsolutePath.Equals("/Api/Districts/districts.json", StringComparison.OrdinalIgnoreCase));
+            return (request.Url.AbsolutePath.Equals("/Api/Districts/Districts.json", StringComparison.OrdinalIgnoreCase));
         }
 
         private Dictionary<int, int> GetBuildingBreakdownByDistrict()

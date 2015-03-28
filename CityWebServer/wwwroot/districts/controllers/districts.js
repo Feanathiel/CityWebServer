@@ -1,17 +1,94 @@
 ﻿'use strict';
 
 define([
-    'districts/module',
-    'districts/assets/js/script'
+    'districts/module'
 ], function (districtsModule) {
     districtsModule.controller('DistrictsCtrl', function ($scope, Districts, $interval) {
-        var chart = initializeChart($scope);
+        var rs = [];
+
+        var chartConfig = {
+            title: {
+                text: 'Statistics'
+            },
+            xAxis: {
+                type: 'datetime',
+                tickPixelInterval: 150
+            },
+            yAxis: {
+                minPadding: 0.2,
+                maxPadding: 0.2,
+                title: {
+                    text: 'Value',
+                    margin: 80
+                }
+            },
+            series: rs,
+            options: {
+                chart: {
+                    defaultSeriesType: 'spline',
+                    animation: {
+                        duration: 0
+                    }
+                }
+            }
+        };
+
+        var keepNLast = function (data, num) {
+            var keep = Math.max(data.length - num, 0);
+
+            if (keep > 0) {
+                data.splice(0, keep);
+            }
+        }
+
+        function addOrUpdateSeries(seriesName, value, valueName) {
+            var series;
+            var matchFound = false;
+            if (rs.length > 0) {
+                for (var s = 0; s < rs.length; s++) {
+                    if (rs[s].name == seriesName) {
+                        series = rs[s];
+                        matchFound = true;
+                        s = rs.length; // Stop looping
+                    }
+                }
+            }
+
+            if (!matchFound) {
+                var seriesOptions = {
+                    id: seriesName,
+                    name: seriesName,
+                    data: [{ name: valueName, y: value }]
+                };
+
+                rs.push(seriesOptions);
+            }
+            else {
+                series.data.push(value);
+                keepNLast(series.data, 20);
+            }
+        }
+
+        function updateChart(vm) {
+            var updatedSeries = [];
+            var districts = vm.Districts;
+
+            for (var i = 0; i < districts.length; i++) {
+                var district = districts[i];
+
+                var seriesName = district.DistrictName + " - Population";
+                var population = district.TotalPopulationCount;
+
+                addOrUpdateSeries(seriesName, population, vm.Time);
+                updatedSeries.push(seriesName);
+            }
+        }
 
         this.loadDistricts = function () {
             Districts.getDistricts().then(function (data) {
                 $scope.data = data.data;
 
-                updateChart($scope.data, chart);
+                updateChart($scope.data);
             });
         };
 
@@ -24,6 +101,8 @@ define([
         $scope.$on('$destroy', function () {
             $interval.cancel(promise);
         });
+
+        $scope.chartConfig = chartConfig;
     });
 });
 
