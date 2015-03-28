@@ -5,6 +5,8 @@ define([
 ], function (citizenModule) {
     citizenModule.controller('AgeDistributionCtrl', function($scope, Citizen, $interval) {
 
+        var lastTime = 0;
+
         var chartConfig = {
             title: {
                 text: 'Age distribution'
@@ -93,20 +95,26 @@ define([
             Citizen.getAgeDistribution().then(function (responseData) {
                 var data = responseData.data;
 
-                var date = data.GameTime;
-                var ageDistribution = data.Distribution;
+                var date = Date.parse(data.GameTime);
 
-                seniorSeries.data.push({ name: date, y: ageDistribution.Seniors });
-                adultSeries.data.push({ name: date, y: ageDistribution.Adults });
-                youngAdultSeries.data.push({ name: date, y: ageDistribution.YoungAdults });
-                teenSeries.data.push({ name: date, y: ageDistribution.Teens });
-                childSeries.data.push({ name: date, y: ageDistribution.Children });
+                if (lastTime !== date) {
 
-                keepNLast(seniorSeries.data, 7 * 13);
-                keepNLast(adultSeries.data, 7 * 13);
-                keepNLast(youngAdultSeries.data, 7 * 13);
-                keepNLast(teenSeries.data, 7 * 13);
-                keepNLast(childSeries.data, 7 * 13);
+                    var ageDistribution = data.Distribution;
+
+                    seniorSeries.data.push({ x: date, y: ageDistribution.Seniors });
+                    adultSeries.data.push({ x: date, y: ageDistribution.Adults });
+                    youngAdultSeries.data.push({ x: date, y: ageDistribution.YoungAdults });
+                    teenSeries.data.push({ x: date, y: ageDistribution.Teens });
+                    childSeries.data.push({ x: date, y: ageDistribution.Children });
+
+                    keepNLast(seniorSeries.data, 7 * 13);
+                    keepNLast(adultSeries.data, 7 * 13);
+                    keepNLast(youngAdultSeries.data, 7 * 13);
+                    keepNLast(teenSeries.data, 7 * 13);
+                    keepNLast(childSeries.data, 7 * 13);
+
+                    lastTime = date;
+                }
             });
         }
 

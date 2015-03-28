@@ -4,6 +4,7 @@ define([
     'districts/module'
 ], function (districtsModule) {
     districtsModule.controller('DistrictsCtrl', function ($scope, Districts, $interval) {
+        var lastTime = 0;
         var rs = [];
 
         var chartConfig = {
@@ -58,13 +59,13 @@ define([
                 var seriesOptions = {
                     id: seriesName,
                     name: seriesName,
-                    data: [{ name: valueName, y: value }]
+                    data: [{ x: valueName, y: value }]
                 };
 
                 rs.push(seriesOptions);
             }
             else {
-                series.data.push(value);
+                series.data.push({ x: valueName, y: value });
                 keepNLast(series.data, 20);
             }
         }
@@ -79,7 +80,7 @@ define([
                 var seriesName = district.DistrictName + " - Population";
                 var population = district.TotalPopulationCount;
 
-                addOrUpdateSeries(seriesName, population, vm.Time);
+                addOrUpdateSeries(seriesName, population, Date.parse(vm.Time));
                 updatedSeries.push(seriesName);
             }
         }
@@ -88,7 +89,13 @@ define([
             Districts.getDistricts().then(function (data) {
                 $scope.data = data.data;
 
-                updateChart($scope.data);
+                var date = Date.parse($scope.data.Time);
+
+                if (lastTime !== date) {
+                    updateChart($scope.data);
+
+                    lastTime = date;
+                }
             });
         };
 

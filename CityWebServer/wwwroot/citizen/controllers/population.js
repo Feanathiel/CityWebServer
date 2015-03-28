@@ -4,6 +4,7 @@ define([
     'citizen/module'
 ], function (citizenModule) {
     citizenModule.controller('PopulationCtrl', function ($scope, Citizen, $interval) {
+        var lastTime = 0;
 
         var chartConfig = {
             title: {
@@ -73,18 +74,23 @@ define([
             Citizen.getAgeDistribution().then(function (responseData) {
                 var data = responseData.data;
 
-                var date = data.GameTime;
-                var ageDistribution = data.Distribution;
+                var date = Date.parse(data.GameTime);
 
-                var total = ageDistribution.Seniors +
-                    ageDistribution.Adults +
-                    ageDistribution.YoungAdults +
-                    ageDistribution.Teens +
-                    ageDistribution.Children;
+                if (lastTime !== date) {
+                    var ageDistribution = data.Distribution;
 
-                populationSeries.data.push({ name: date, y: total });
+                    var total = ageDistribution.Seniors +
+                        ageDistribution.Adults +
+                        ageDistribution.YoungAdults +
+                        ageDistribution.Teens +
+                        ageDistribution.Children;
 
-                keepNLast(populationSeries.data, 7 * 13);
+                    populationSeries.data.push({ x: date, y: total });
+
+                    keepNLast(populationSeries.data, 7 * 13);
+
+                    lastTime = date;
+                }
             });
         }
 

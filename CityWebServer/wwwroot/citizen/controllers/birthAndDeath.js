@@ -4,6 +4,7 @@ define([
     'citizen/module'
 ], function (citizenModule) {
     citizenModule.controller('BirthAndDeathCtrl', function ($scope, Citizen, $interval) {
+        var lastTime = 0;
 
         var chartConfig = {
             title: {
@@ -65,14 +66,19 @@ define([
             Citizen.getBirthAndDeathRate().then(function (responseData) {
                 var data = responseData.data;
 
-                var date = data.GameTime;
-                var rate = data.Rate;
+                var date = Date.parse(data.GameTime);
 
-                birthSeries.data.push({ name: date, y: rate.Birth });
-                deathSeries.data.push({ name: date, y: rate.Death });
+                if (lastTime !== date) {
+                    var rate = data.Rate;
 
-                keepNLast(birthSeries.data, 7 * 13);
-                keepNLast(deathSeries.data, 7 * 13);
+                    birthSeries.data.push({ x: date, y: rate.Birth });
+                    deathSeries.data.push({ x: date, y: rate.Death });
+
+                    keepNLast(birthSeries.data, 7 * 13);
+                    keepNLast(deathSeries.data, 7 * 13);
+
+                    lastTime = date;
+                }
             });
         }
 
