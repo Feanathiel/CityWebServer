@@ -19,6 +19,14 @@ namespace CityWebServer.Services
         }
 
         /// <summary>
+        /// Gets the cities' name.
+        /// </summary>
+        public String GetCityName()
+        {
+            return _simulationManager.m_metaData.m_CityName;
+        }
+
+        /// <summary>
         /// Gets the current time of the game.
         /// </summary>
         public DateTime GetGameTime()

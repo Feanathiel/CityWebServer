@@ -235,6 +235,12 @@ namespace CityWebServer
                 try
                 {
                     IResponseFormatter responseFormatterWriter = handler.Handle(requestParameters);
+
+                    if (responseFormatterWriter == null)
+                    {
+                        responseFormatterWriter = new PlainTextResponseFormatter(String.Empty, HttpStatusCode.NotFound);
+                    }
+                    
                     responseFormatterWriter.WriteContent(response);
 
                     return;

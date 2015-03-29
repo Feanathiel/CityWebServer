@@ -8,7 +8,7 @@ define([
 
         $scope.Links = navigation();
 
-        $http.get('base/data/navigation.json').success(function (data) {
+        $http.get('Api/Server/CityName.json').success(function (data) {
             $scope.CityName = data.CityName;
         });
     });
