@@ -2,7 +2,7 @@
 using System.Net;
 using System.Text;
 
-namespace CityWebServer.Extensibility.Responses
+namespace CityWebServer.Extensibility.ResponseFormatters
 {
     internal class HtmlResponseFormatter : IResponseFormatter
     {

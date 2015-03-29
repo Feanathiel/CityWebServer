@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net;
-using CityWebServer.Extensibility.Responses;
+using CityWebServer.Extensibility.ResponseFormatters;
 
 namespace CityWebServer.Extensibility
 {
@@ -40,7 +40,7 @@ namespace CityWebServer.Extensibility
         public abstract Boolean ShouldHandle(IRequestParameters request);
 
         /// <summary>
-        /// Handles the specified request.  The method should not close the stream.
+        /// Handles the specified request.
         /// </summary>
         public abstract IResponseFormatter Handle(IRequestParameters request);
 
@@ -66,6 +66,14 @@ namespace CityWebServer.Extensibility
         protected IResponseFormatter PlainTextResponse(String content, HttpStatusCode statusCode = HttpStatusCode.OK)
         {
             return new PlainTextResponseFormatter(content, statusCode);
+        }
+
+        /// <summary>
+        /// Redirects the user to the new url.
+        /// </summary>
+        protected IResponseFormatter RedirectResponse(String url)
+        {
+            return new RedirectResponseFormatter(url);
         }
     }
 }

@@ -18,7 +18,7 @@ namespace CityWebServer
 
             // URI prefix is required, for example:
             // "http://localhost:8080/index/".
-            if (string.IsNullOrEmpty(prefix))
+            if (String.IsNullOrEmpty(prefix))
             {
                 throw new ArgumentNullException("prefix");
             }

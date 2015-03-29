@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Xml.Serialization;
 
 namespace CityWebServer.Models
 {
-    public class CityInfo
+    internal class CityInfo
     {
         public String Name { get; set; }
         public DateTime Time { get; set; }
