@@ -4,14 +4,9 @@ define([
     'base/module',
     'base/services/Navigation'
 ], function (baseModule) {
-    baseModule.controller('NavCtrl', function ($scope, $http, Navigation) {
+    baseModule.controller('NavCtrl', function ($scope, $http, navigation) {
 
-        Navigation.register('Home', '/');
-        Navigation.register('Log', '/log/');
-        Navigation.register('Districts', '/districts/');
-        Navigation.register('Citizen', '/citizen/');
-
-        $scope.Links = Navigation.list();
+        $scope.Links = navigation();
 
         $http.get('base/data/navigation.json').success(function (data) {
             $scope.CityName = data.CityName;

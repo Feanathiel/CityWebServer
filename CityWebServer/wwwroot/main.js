@@ -26,8 +26,8 @@ require.config({
 
 var dependencies = [
     'angular',
-    'app',
-    'base/index'
+    'base/index',
+    'app'
 ];
 
 var bootDependencies = dependencies;

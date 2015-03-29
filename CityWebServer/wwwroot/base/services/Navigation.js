@@ -3,20 +3,20 @@
 define([
     'base/module'
 ], function (baseModule) {
+    baseModule.provider('navigation', function () {
+        var navigationItems = [];
 
-    var navigationItems = [];
-
-    var navigation = {
-        list: function () {
-            return navigationItems;
-        },
-        register: function(title, url) {
+        this.register = function (title, url) {
             navigationItems.push({
-                'Title': title, 
+                'Title': title,
                 'Url': url
             });
-        }
-    };
+        };
 
-    baseModule.value('Navigation', navigation);
+        this.$get = function () {
+            return function () {
+                return navigationItems;
+            };
+        };
+    });
 });

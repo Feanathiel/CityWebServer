@@ -2,16 +2,19 @@
 
 define([
     'angular',
-    'angularRoute'
+    'angularRoute',
+    'base/services/Navigation'
 ], function(angular, angularRoute) {
 
     var module = angular.module('serverModule', [
-        'ngRoute'
+        'ngRoute',
+        'baseModule'
     ]);
 
     module.config([
         '$routeProvider',
-        function($routeProvider) {
+        'navigationProvider',
+        function ($routeProvider, navigationProvider) {
             $routeProvider.
                 when('/', {
                     templateUrl: 'server/views/home.html',
@@ -21,6 +24,9 @@ define([
                     templateUrl: 'server/views/log.html',
                     controller: 'LogCtrl'
                 });
+
+            navigationProvider.register('Home', '/');
+            navigationProvider.register('Log', '/log/');
         }
     ]);
 
