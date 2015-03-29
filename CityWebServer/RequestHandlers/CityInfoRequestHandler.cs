@@ -146,24 +146,7 @@ namespace CityWebServer.RequestHandlers
         private IEnumerable<int> GetDistrictsFromRequest(IRequestParameters request)
         {
             IEnumerable<int> districtIDs;
-            
-            string value;
-            if (request.TryGetQueryStringValue("districtID", out value))
-            {
-                List<int> districtIDList = new List<int>();
-
-                int districtID;
-                if (int.TryParse(value, out districtID))
-                {
-                    districtIDList.Add(districtID);
-                }
-
-                districtIDs = districtIDList;
-            }
-            else
-            {
-                districtIDs = DistrictInfo.GetDistricts();
-            }
+            districtIDs = DistrictInfo.GetDistricts();
 
             return districtIDs;
         }
