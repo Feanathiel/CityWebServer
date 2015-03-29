@@ -3,6 +3,7 @@
 define([
         'angular',
         'angularRoute',
+        'base/index',
         /* Need to load these dynamically somehow */
         'server/index',
         'districts/index',
@@ -12,6 +13,7 @@ define([
 
         var app = angular.module('app', [
             'ngRoute',
+            'baseModule',
             /* Need to load these dynamically somehow */
             'serverModule',
             'districtsModule',

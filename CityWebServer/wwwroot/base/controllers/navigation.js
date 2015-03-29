@@ -1,10 +1,10 @@
 ﻿'use strict';
 
 define([
-    'app',
+    'base/module',
     'base/services/Navigation'
-], function (app) {
-    app.controller('NavCtrl', function ($scope, $http, Navigation) {
+], function (baseModule) {
+    baseModule.controller('NavCtrl', function ($scope, $http, Navigation) {
 
         Navigation.register('Home', '/');
         Navigation.register('Log', '/log/');

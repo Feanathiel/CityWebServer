@@ -1,8 +1,8 @@
 ﻿'use strict';
 
 define([
-    'app'
-], function (app) {
+    'base/module'
+], function (baseModule) {
 
     var navigationItems = [];
 
@@ -18,5 +18,5 @@ define([
         }
     };
 
-    app.value('Navigation', navigation);
+    baseModule.value('Navigation', navigation);
 });
