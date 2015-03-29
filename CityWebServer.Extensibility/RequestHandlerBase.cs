@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using CityWebServer.Extensibility.ResponseFormatters;
 using CityWebServer.Extensibility.Responses;
 
 namespace CityWebServer.Extensibility
@@ -66,6 +67,14 @@ namespace CityWebServer.Extensibility
         protected IResponseFormatter PlainTextResponse(String content, HttpStatusCode statusCode = HttpStatusCode.OK)
         {
             return new PlainTextResponseFormatter(content, statusCode);
+        }
+
+        /// <summary>
+        /// Redirects the user to the new url.
+        /// </summary>
+        protected IResponseFormatter RedirectResponse(String url)
+        {
+            return new RedirectResponseFormatter(url);
         }
     }
 }

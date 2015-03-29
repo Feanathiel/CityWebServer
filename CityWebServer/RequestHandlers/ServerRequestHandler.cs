@@ -9,6 +9,7 @@ namespace CityWebServer.RequestHandlers
     {
         private readonly List<Func<IRequestParameters, IResponseFormatter>> _pathHandlers;
 
+        private readonly LogService _logService;
         private readonly GameService _gameService;
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace CityWebServer.RequestHandlers
         /// </summary>
         public override int Priority
         {
-            get { return 1000; }
+            get { return int.MaxValue; }
         }
 
         /// <summary>
@@ -55,9 +56,11 @@ namespace CityWebServer.RequestHandlers
         {
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
             {
+                HandleLogLines,
                 HandleCityName
             };
 
+            _logService = LogService.Instance;
             _gameService = new GameService();
         }
 
@@ -85,6 +88,18 @@ namespace CityWebServer.RequestHandlers
             }
 
             return null;
+        }
+
+        private IResponseFormatter HandleLogLines(IRequestParameters request)
+        {
+            if (!request.Url.AbsolutePath.Equals(MainPath + "LogLines.json", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            IEnumerable<string> logLines = _logService.GetLogLines();
+
+            return JsonResponse(logLines);
         }
 
         private IResponseFormatter HandleCityName(IRequestParameters request)

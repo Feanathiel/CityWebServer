@@ -6,8 +6,10 @@ using System.Net;
 using System.Reflection;
 using ApacheMimeTypes;
 using CityWebServer.Extensibility;
+using CityWebServer.Extensibility.ResponseFormatters;
 using CityWebServer.Extensibility.Responses;
 using CityWebServer.Helpers;
+using CityWebServer.Services;
 using ColossalFramework;
 using ColossalFramework.Plugins;
 using ICities;
@@ -21,12 +23,11 @@ namespace CityWebServer
         private const String WebServerPortKey = "webServerPort";
         private static readonly Type RequestHandlerType = typeof(IRequestHandler);
 
-        private static List<String> _logLines;
+        private readonly LogService _logService;
         private static string _endpoint;
 
         private WebServer _server;
-        private List<IRequestHandler> _requestHandlers;
-        private String _cityName = "CityName";
+        private SortedList<IRequestHandler, IRequestHandler> _requestHandlers;
 
         // Not required, but prevents a number of spurious entries from making it to the log file.
         private static readonly List<String> IgnoredAssemblies = new List<String>
@@ -76,24 +77,15 @@ namespace CityWebServer
         }
 
         /// <summary>
-        /// Gets an array containing all currently registered request handlers.
-        /// </summary>
-        public IRequestHandler[] RequestHandlers
-        {
-            get { return _requestHandlers.ToArray(); }
-        }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="IntegratedWebServer"/> class.
         /// </summary>
         public IntegratedWebServer()
         {
-            // For the entire lifetime of this instance, we'll preseve log messages.
-            // After a certain point, it might be worth truncating them, but we'll cross that bridge when we get to it.
-            _logLines = new List<String>();
+            _logService = LogService.Instance;
 
             // We need a place to store all the request handlers that have been registered.
-            _requestHandlers = new List<IRequestHandler>();
+            var requestHandlerComparer = new RequestHandlerComparer();
+            _requestHandlers = new SortedList<IRequestHandler, IRequestHandler>(requestHandlerComparer);
         }
 
         #region Create
@@ -105,7 +97,6 @@ namespace CityWebServer
         public override void OnCreated(IThreading threading)
         {
             this.InitializeServer();
-            _requestHandlers = new List<IRequestHandler>();
             RegisterAssemblyLoader();
             RegisterHandlers();
 
@@ -143,7 +134,7 @@ namespace CityWebServer
             }
 
             LogMessage("Initializing Server...");
-
+            
             // I'm not sure how I feel about making the port registration configurable.
             // Honestly, it sort of defeats the purpose, since other mods could potentially expect it to exist on a specific port.
 
@@ -212,7 +203,6 @@ namespace CityWebServer
             LogMessage(String.Format("{0} {1}", request.HttpMethod, request.RawUrl));
 
             var simulationManager = Singleton<SimulationManager>.instance;
-            _cityName = simulationManager.m_metaData.m_CityName;
 
             // There are two reserved endpoints: "/" and "/Log".
             // These take precedence over all other request handlers.
@@ -221,15 +211,11 @@ namespace CityWebServer
                 return;
             }
 
-            if (ServiceLog(request, response))
-            {
-                return;
-            }
-
             IRequestParameters requestParameters = new RequestParameters(request);
 
             // Get the request handler associated with the current request.
-            var handler = _requestHandlers.FirstOrDefault(obj => obj.ShouldHandle(requestParameters));
+
+            var handler = _requestHandlers.Values.FirstOrDefault(obj => obj.ShouldHandle(requestParameters));
             if (handler != null)
             {
                 try
@@ -247,11 +233,12 @@ namespace CityWebServer
                 }
                 catch (Exception ex)
                 {
-                    String errorBody = String.Format("<h1>An error has occurred!</h1><pre>{0}</pre>", ex);
-                    var tokens = TemplateHelper.GetTokenReplacements(_cityName, "Error", _requestHandlers, errorBody);
-                    var template = TemplateHelper.PopulateTemplate("index", tokens);
+                    _logService.LogMessage(ex.ToString());
 
-                    IResponseFormatter errorResponseFormatter = new HtmlResponseFormatter(template);
+                    IResponseFormatter errorResponseFormatter = new PlainTextResponseFormatter(
+                        string.Empty, 
+                        HttpStatusCode.InternalServerError);
+
                     errorResponseFormatter.WriteContent(response);
 
                     return;
@@ -323,7 +310,7 @@ namespace CityWebServer
                     handlerInstance = (IRequestHandler) Activator.CreateInstance(handler);
 
                     // Duplicates handlers seem to pass the check above, so now we filter them based on their identifier values, which should work.
-                    exists = _requestHandlers.Any(obj => obj.HandlerID == handlerInstance.HandlerID);
+                    exists = _requestHandlers.Values.Any(obj => obj.HandlerID == handlerInstance.HandlerID);
                 }
                 catch (Exception ex)
                 {
@@ -337,7 +324,7 @@ namespace CityWebServer
                 }
                 else
                 {
-                    _requestHandlers.Add(handlerInstance);
+                    _requestHandlers.Add(handlerInstance, handlerInstance);
                     if (handlerInstance is ILogAppender)
                     {
                         var logAppender = (handlerInstance as ILogAppender);
@@ -358,7 +345,7 @@ namespace CityWebServer
         /// <summary>
         /// Searches all the assemblies in the current AppDomain, and returns a collection of those that implement the <see cref="IRequestHandler"/> interface.
         /// </summary>
-        private static IEnumerable<Type> FindHandlersInLoadedAssemblies()
+        private IEnumerable<Type> FindHandlersInLoadedAssemblies()
         {
             List<Type> handlers = new List<Type>();
             
@@ -372,7 +359,7 @@ namespace CityWebServer
             return handlers;
         }
 
-        private static void AppendPotentialHandlers(Assembly assembly, ICollection<Type> handlers)
+        private void AppendPotentialHandlers(Assembly assembly, ICollection<Type> handlers)
         {
             var assemblyName = assembly.GetName().Name;
 
@@ -399,8 +386,14 @@ namespace CityWebServer
             {
                 LogMessage(ex.ToString());
             }
-            LogMessage(String.Format("Found {0} types in {1}, of which {2} were potential request handlers.", typeCount,
-                assembly.GetName().Name, handlers.Count));
+
+            var message = String.Format(
+                "Found {0} types in {1}, of which {2} were potential request handlers.", 
+                typeCount,
+                assembly.GetName().Name,
+                handlers.Count);
+
+            LogMessage(message);
         }
 
         #region Reserved Endpoint Handlers
@@ -408,48 +401,20 @@ namespace CityWebServer
         /// <summary>
         /// Services requests to <c>~/</c>
         /// </summary>
-        private Boolean ServiceRoot(HttpListenerRequest request, HttpListenerResponse response)
+        private static Boolean ServiceRoot(HttpListenerRequest request, HttpListenerResponse response)
         {
             if (request.Url.AbsolutePath.ToLower() == "/")
             {
-                List<String> links = new List<String>();
-                foreach (var requestHandler in this._requestHandlers.OrderBy(obj => obj.Priority))
-                {
-                    links.Add(String.Format("<li><a href='{1}'>{0}</a> by {2} (Priority: {3})</li>", requestHandler.Name, requestHandler.MainPath, requestHandler.Author, requestHandler.Priority));
-                }
-
-                String body = String.Format("<h1>Cities: Skylines - Integrated Web Server</h1><ul>{0}</ul>", String.Join("", links.ToArray()));
-                var tokens = TemplateHelper.GetTokenReplacements(_cityName, "Home", _requestHandlers, body);
-                var template = TemplateHelper.PopulateTemplate("index", tokens);
-
-                IResponseFormatter htmlResponseFormatter = new HtmlResponseFormatter(template);
-                htmlResponseFormatter.WriteContent(response);
-
+                const string newUrl = "/index.html";
+                IResponseFormatter redirectFormatter = new RedirectResponseFormatter(newUrl);
+                redirectFormatter.WriteContent(response);
+                
                 return true;
             }
 
             return false;
         }
-
-        /// <summary>
-        /// Services requests to <c>~/Log</c>
-        /// </summary>
-        private static Boolean ServiceLog(HttpListenerRequest request, HttpListenerResponse response)
-        {
-            if (request.Url.AbsolutePath.ToUpperInvariant() == "/API/SERVER/LOGLINES.JSON")
-            {
-                IResponseFormatter formatter = new JsonResponseFormatter<IEnumerable<String>>(
-                    _logLines.ToList(),
-                    HttpStatusCode.OK);
-
-                formatter.WriteContent(response);
-
-                return true;
-            }
-
-            return false;
-        }
-
+        
         #endregion Reserved Endpoint Handlers
 
         #region Logging
@@ -457,25 +422,19 @@ namespace CityWebServer
         /// <summary>
         /// Adds a timestamp to the specified message, and appends it to the internal log.
         /// </summary>
-        public static void LogMessage(String message, String label = null, Boolean showInDebugPanel = false)
+        public void LogMessage(String message, String label = null, Boolean showInDebugPanel = false)
         {
             var dt = DateTime.Now;
             String time = String.Format("{0} {1}", dt.ToShortDateString(), dt.ToShortTimeString());
             String messageWithLabel = String.IsNullOrEmpty(label) ? message : String.Format("{0}: {1}", label, message);
             String line = String.Format("[{0}] {1}{2}", time, messageWithLabel, Environment.NewLine);
-            _logLines.Add(line);
+
+            _logService.LogMessage(line);
+
             if (showInDebugPanel)
             {
                 DebugOutputPanel.AddMessage(PluginManager.MessageType.Message, line);
             }
-        }
-
-        /// <summary>
-        /// Writes the value of <paramref name="args"/>.<see cref="LogAppenderEventArgs.LogLine"/> to the internal log.
-        /// </summary>
-        private void ServerOnLogMessage(object sender, LogAppenderEventArgs args)
-        {
-            LogMessage(args.LogLine);
         }
 
         #endregion Logging
