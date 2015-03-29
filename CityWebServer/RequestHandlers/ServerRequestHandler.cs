@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using CityWebServer.Extensibility;
 using CityWebServer.Services;
+using JetBrains.Annotations;
 
 namespace CityWebServer.RequestHandlers
 {
+    /// <summary>
+    /// Handles core server specific requests.
+    /// </summary>
     internal class ServerRequestHandler : RequestHandlerBase
     {
         private readonly List<Func<IRequestParameters, IResponseFormatter>> _pathHandlers;
@@ -52,6 +56,10 @@ namespace CityWebServer.RequestHandlers
             get { return "/Api/Server/"; }
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="ServerRequestHandler"/>.
+        /// </summary>
+        [UsedImplicitly]
         public ServerRequestHandler()
         {
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
@@ -73,7 +81,7 @@ namespace CityWebServer.RequestHandlers
         }
 
         /// <summary>
-        /// Handles the specified request.  The method should not close the stream.
+        /// Handles the specified request.
         /// </summary>
         public override IResponseFormatter Handle(IRequestParameters request)
         {
@@ -90,6 +98,9 @@ namespace CityWebServer.RequestHandlers
             return null;
         }
 
+        /// <summary>
+        /// Handles the log lines request.
+        /// </summary>
         private IResponseFormatter HandleLogLines(IRequestParameters request)
         {
             if (!request.Url.AbsolutePath.Equals(MainPath + "LogLines.json", StringComparison.OrdinalIgnoreCase))
@@ -97,11 +108,14 @@ namespace CityWebServer.RequestHandlers
                 return null;
             }
 
-            IEnumerable<string> logLines = _logService.GetLogLines();
+            IEnumerable<String> logLines = _logService.GetLogLines();
 
             return JsonResponse(logLines);
         }
 
+        /// <summary>
+        /// Handles the city name request.
+        /// </summary>
         private IResponseFormatter HandleCityName(IRequestParameters request)
         {
             if (!request.Url.AbsolutePath.Equals(MainPath + "CityName.json", StringComparison.OrdinalIgnoreCase))

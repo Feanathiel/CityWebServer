@@ -2,7 +2,7 @@
 
 namespace CityWebServer.Models
 {
-    public class DistrictInfo
+    internal class DistrictInfo
     {
         public int DistrictID { get; set; }
 

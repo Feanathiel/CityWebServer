@@ -7,10 +7,8 @@ using System.Reflection;
 using ApacheMimeTypes;
 using CityWebServer.Extensibility;
 using CityWebServer.Extensibility.ResponseFormatters;
-using CityWebServer.Extensibility.Responses;
 using CityWebServer.Helpers;
 using CityWebServer.Services;
-using ColossalFramework;
 using ColossalFramework.Plugins;
 using ICities;
 using JetBrains.Annotations;
@@ -24,10 +22,10 @@ namespace CityWebServer
         private static readonly Type RequestHandlerType = typeof(IRequestHandler);
 
         private readonly LogService _logService;
-        private static string _endpoint;
+        private static String _endpoint;
 
         private WebServer _server;
-        private SortedList<IRequestHandler, IRequestHandler> _requestHandlers;
+        private readonly SortedList<IRequestHandler, IRequestHandler> _requestHandlers;
 
         // Not required, but prevents a number of spurious entries from making it to the log file.
         private static readonly List<String> IgnoredAssemblies = new List<String>
@@ -84,7 +82,7 @@ namespace CityWebServer
             _logService = LogService.Instance;
 
             // We need a place to store all the request handlers that have been registered.
-            var requestHandlerComparer = new RequestHandlerComparer();
+            var requestHandlerComparer = new RequestHandlerPriorityComparer();
             _requestHandlers = new SortedList<IRequestHandler, IRequestHandler>(requestHandlerComparer);
         }
 
@@ -234,7 +232,7 @@ namespace CityWebServer
                     _logService.LogMessage(ex.ToString());
 
                     IResponseFormatter errorResponseFormatter = new PlainTextResponseFormatter(
-                        string.Empty, 
+                        String.Empty, 
                         HttpStatusCode.InternalServerError);
 
                     errorResponseFormatter.WriteContent(response);
@@ -403,7 +401,7 @@ namespace CityWebServer
         {
             if (request.Url.AbsolutePath.ToLower() == "/")
             {
-                const string newUrl = "/index.html";
+                const String newUrl = "/index.html";
                 IResponseFormatter redirectFormatter = new RedirectResponseFormatter(newUrl);
                 redirectFormatter.WriteContent(response);
                 

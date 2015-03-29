@@ -4,7 +4,10 @@ using CityWebServer.Extensibility;
 
 namespace CityWebServer
 {
-    internal class RequestHandlerComparer : IComparer<IRequestHandler>
+    /// <summary>
+    /// Compares the priority of two <see cref="IRequestHandler"/>s.
+    /// </summary>
+    internal class RequestHandlerPriorityComparer : IComparer<IRequestHandler>
     {
         public int Compare(IRequestHandler x, IRequestHandler y)
         {

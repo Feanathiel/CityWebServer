@@ -23,7 +23,7 @@ namespace CityWebServer.Services
 
         public static readonly LogService Instance = new LogService();
 
-        public void LogMessage(string message)
+        public void LogMessage(String message)
         {
             _logLines.Add(message);
         }

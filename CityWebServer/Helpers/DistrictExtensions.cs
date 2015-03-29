@@ -1,5 +1,4 @@
 ﻿using System;
-using CityWebServer.Models;
 
 namespace CityWebServer.Helpers
 {

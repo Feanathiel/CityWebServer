@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using CityWebServer.Extensibility.ResponseFormatters;
-using CityWebServer.Extensibility.Responses;
 
 namespace CityWebServer.Extensibility
 {
@@ -41,7 +40,7 @@ namespace CityWebServer.Extensibility
         public abstract Boolean ShouldHandle(IRequestParameters request);
 
         /// <summary>
-        /// Handles the specified request.  The method should not close the stream.
+        /// Handles the specified request.
         /// </summary>
         public abstract IResponseFormatter Handle(IRequestParameters request);
 

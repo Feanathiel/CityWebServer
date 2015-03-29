@@ -64,13 +64,12 @@
     <Compile Include="Helpers\ApacheMimeTypes.cs" />
     <Compile Include="Helpers\ConfigurationHelper.cs" />
     <Compile Include="Helpers\DistrictExtensions.cs" />
-    <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\RequestParametersExtensions.cs" />
     <Compile Include="Models\CityInfo.cs" />
     <Compile Include="Models\DistrictInfo.cs" />
     <Compile Include="Models\Employment.cs" />
     <Compile Include="Models\PopulationGroup.cs" />
-    <Compile Include="RequestHandlerComparer.cs" />
+    <Compile Include="RequestHandlerPriorityComparer.cs" />
     <Compile Include="RequestHandlers\ServerRequestHandler.cs" />
     <Compile Include="RequestHandlers\CitizenRequestHandler.cs" />
     <Compile Include="RequestHandlers\DistrictsRequestHandler.cs" />

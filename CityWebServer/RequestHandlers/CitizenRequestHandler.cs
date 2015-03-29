@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using CityWebServer.Extensibility;
 using CityWebServer.Models;
 using CityWebServer.Services;
+using JetBrains.Annotations;
 
 namespace CityWebServer.RequestHandlers
 {
+    /// <summary>
+    /// Handles citizen specific information.
+    /// </summary>
     internal class CitizenRequestHandler : RequestHandlerBase
     {
         private readonly List<Func<IRequestParameters, IResponseFormatter>> _pathHandlers;
@@ -63,6 +66,10 @@ namespace CityWebServer.RequestHandlers
             return request.Url.AbsolutePath.StartsWith(MainPath, StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="CitizenRequestHandler"/>.
+        /// </summary>
+        [UsedImplicitly]
         public CitizenRequestHandler()
         {
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
