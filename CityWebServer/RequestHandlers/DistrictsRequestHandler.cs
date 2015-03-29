@@ -71,7 +71,7 @@ namespace CityWebServer.RequestHandlers
         /// </summary>
         public override Boolean ShouldHandle(IRequestParameters request)
         {
-            return (request.Url.AbsolutePath.Equals(MainPath, StringComparison.OrdinalIgnoreCase));
+            return (request.Url.AbsolutePath.StartsWith(MainPath, StringComparison.OrdinalIgnoreCase));
         }
 
         /// <summary>
