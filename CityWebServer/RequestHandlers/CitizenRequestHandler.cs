@@ -28,7 +28,7 @@ namespace CityWebServer.RequestHandlers
         /// </summary>
         public override int Priority
         {
-            get { return 100; }
+            get { return 0; }
         }
 
         /// <summary>

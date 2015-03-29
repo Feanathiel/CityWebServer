@@ -73,10 +73,11 @@
     <Compile Include="RequestHandlerComparer.cs" />
     <Compile Include="RequestHandlers\ServerRequestHandler.cs" />
     <Compile Include="RequestHandlers\CitizenRequestHandler.cs" />
-    <Compile Include="RequestHandlers\CityInfoRequestHandler.cs" />
+    <Compile Include="RequestHandlers\DistrictsRequestHandler.cs" />
     <Compile Include="RequestParameters.cs" />
     <Compile Include="Models\BirthAndDeathRate.cs" />
     <Compile Include="Services\CitizenService.cs" />
+    <Compile Include="Services\CityInfoService.cs" />
     <Compile Include="Services\LogService.cs" />
     <Compile Include="Models\AgeDistribution.cs" />
     <Compile Include="Services\GameService.cs" />

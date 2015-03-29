@@ -202,8 +202,6 @@ namespace CityWebServer
         {
             LogMessage(String.Format("{0} {1}", request.HttpMethod, request.RawUrl));
 
-            var simulationManager = Singleton<SimulationManager>.instance;
-
             // There are two reserved endpoints: "/" and "/Log".
             // These take precedence over all other request handlers.
             if (ServiceRoot(request, response))
