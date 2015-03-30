@@ -13,7 +13,8 @@
                 <th>Households (Max)</th>
                 <th>Jobs (Max)</th>
                 <th>Weekly Tourists</th>
-                <th>Average Land Value</th>
+                <th>Land Value</th>
+				<th>Pollution</th>
             </tr>
         </thead>
         <tbody>
@@ -27,6 +28,7 @@
                 <td>{{district.CurrentJobs}} ({{district.AvailableJobs}})</td>
                 <td>{{district.WeeklyTouristVisits}}</td>
                 <td>{{district.AverageLandValue}}</td>
+				<td>{{district.Pollution * 100 | number: 0}}</td>
             </tr>
         </tbody>
         <tfoot>
@@ -40,6 +42,7 @@
                 <td>{{data.GlobalDistrict.CurrentJobs}} ({{data.GlobalDistrict.AvailableJobs}})</td>
                 <td>{{data.GlobalDistrict.WeeklyTouristVisits}}</td>
                 <td>{{data.GlobalDistrict.AverageLandValue}}</td>
+				<td>{{data.GlobalDistrict.Pollution * 100 | number: 0}}</td>
             </tr>
         </tfoot>
     </table>
