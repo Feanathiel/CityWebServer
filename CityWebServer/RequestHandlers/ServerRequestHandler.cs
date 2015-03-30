@@ -17,50 +17,11 @@ namespace CityWebServer.RequestHandlers
         private readonly GameService _gameService;
 
         /// <summary>
-        /// Gets a unique identifier for this handler.
-        /// </summary>
-        public override Guid HandlerID
-        {
-            get { return new Guid("4E3ADFBB-FB73-4C78-8223-E19F7DD1123B"); }
-        }
-
-        /// <summary>
-        /// Gets the priority of this request handler.
-        /// </summary>
-        public override int Priority
-        {
-            get { return int.MaxValue; }
-        }
-
-        /// <summary>
-        /// Gets the display name of this request handler.
-        /// </summary>
-        public override String Name
-        {
-            get { return "Base"; }
-        }
-
-        /// <summary>
-        /// Gets the author of this request handler.
-        /// </summary>
-        public override String Author
-        {
-            get { return "Feanathiel"; }
-        }
-
-        /// <summary>
-        /// Gets the absolute path to the main page for this request handler.
-        /// </summary>
-        public override String MainPath
-        {
-            get { return "/Api/Server/"; }
-        }
-
-        /// <summary>
         /// Creates a new instance of the <see cref="ServerRequestHandler"/>.
         /// </summary>
         [UsedImplicitly]
-        public ServerRequestHandler()
+        public ServerRequestHandler(IWebServer server)
+            : base(server, new Guid("4E3ADFBB-FB73-4C78-8223-E19F7DD1123B"), "Base", "Feanathiel", int.MaxValue, "/Api/Server/")
         {
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
             {

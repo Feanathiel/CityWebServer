@@ -1,0 +1,26 @@
+{
+	"GameTime": "2015-03-30T09:56:00Z",
+	"EducationEmployment":
+	{
+		"Uneducated":
+		{
+			"Employed": 25,
+			"Unemployed": 0
+		},
+		"Elementary":
+		{
+			"Employed": 25,
+			"Unemployed": 0
+		},
+		"HighSchool":
+		{
+			"Employed": 25,
+			"Unemployed": 0
+		},
+		"University":
+		{
+			"Employed": 25,
+			"Unemployed": 0
+		}
+	}
+}

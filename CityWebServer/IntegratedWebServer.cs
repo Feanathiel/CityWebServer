@@ -16,7 +16,7 @@ using JetBrains.Annotations;
 namespace CityWebServer
 {
     [UsedImplicitly]
-    public class IntegratedWebServer : ThreadingExtensionBase
+    public class IntegratedWebServer : ThreadingExtensionBase, IWebServer
     {
         private const String WebServerPortKey = "webServerPort";
         private static readonly Type RequestHandlerType = typeof(IRequestHandler);
@@ -65,7 +65,7 @@ namespace CityWebServer
             foreach (var path in modPaths)
             {
                 var testPath = Path.Combine(path, "wwwroot");
-                
+
                 if (Directory.Exists(testPath))
                 {
                     return testPath;
@@ -73,6 +73,14 @@ namespace CityWebServer
             }
             return null;
         }
+
+		/// <summary>
+		/// Gets an array containing all currently registered request handlers.
+		/// </summary>
+		public IRequestHandler[] RequestHandlers
+		{
+			get { return _requestHandlers.Values.ToArray(); }
+		}
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IntegratedWebServer"/> class.
@@ -95,32 +103,9 @@ namespace CityWebServer
         public override void OnCreated(IThreading threading)
         {
             this.InitializeServer();
-            RegisterAssemblyLoader();
-            RegisterHandlers();
+
 
             base.OnCreated(threading);
-        }
-
-        private void RegisterAssemblyLoader()
-        {
-            AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoad;
-            AppDomain.CurrentDomain.DomainUnload += OnAppDomainUnload;
-        }
-
-        private void OnAppDomainUnload(object sender, EventArgs e)
-        {
-            // TODO: Unload handlers
-            _requestHandlers.Clear();
-        }
-
-        private void OnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
-        {
-            Assembly assembly = args.LoadedAssembly;
-
-            List<Type> handlers = new List<Type>();
-            AppendPotentialHandlers(assembly, handlers);
-            RegisterHandlers(handlers);
-
         }
 
         private void InitializeServer()
@@ -154,6 +139,15 @@ namespace CityWebServer
             _server = ws;
             _server.Run();
             LogMessage("Server Initialized.");
+
+            try
+            {
+                RegisterHandlers();
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
         }
 
         #endregion Create
@@ -242,7 +236,7 @@ namespace CityWebServer
             }
 
             var wwwroot = GetWebRoot();
-            
+
             // At this point, we can guarantee that we don't need any game data, so we can safely start a new thread to perform the remaining tasks.
             ServiceFileRequest(wwwroot, request, response);
         }
@@ -290,6 +284,11 @@ namespace CityWebServer
 
         private void RegisterHandlers(IEnumerable<Type> handlers)
         {
+            if (handlers == null)
+            {
+                return;
+            }
+
             foreach (var handler in handlers)
             {
                 // Only register handlers that we don't already have an instance of.
@@ -303,7 +302,20 @@ namespace CityWebServer
 
                 try
                 {
-                    handlerInstance = (IRequestHandler) Activator.CreateInstance(handler);
+                    if (typeof(RequestHandlerBase).IsAssignableFrom(handler))
+                    {
+                        handlerInstance = (RequestHandlerBase)Activator.CreateInstance(handler, this);
+                    }
+                    else
+                    {
+                        handlerInstance = (IRequestHandler)Activator.CreateInstance(handler);
+                    }
+
+                    if (handlerInstance == null)
+                    {
+                        LogMessage(String.Format("Request Handler ({0}) could not be instantiated!", handler.Name));
+                        continue;
+                    }
 
                     // Duplicates handlers seem to pass the check above, so now we filter them based on their identifier values, which should work.
                     exists = _requestHandlers.Values.Any(obj => obj.HandlerID == handlerInstance.HandlerID);
@@ -343,53 +355,49 @@ namespace CityWebServer
         /// </summary>
         private IEnumerable<Type> FindHandlersInLoadedAssemblies()
         {
-            List<Type> handlers = new List<Type>();
-            
             var assemblies = AppDomain.CurrentDomain.GetAssemblies();
 
             foreach (var assembly in assemblies)
             {
-                AppendPotentialHandlers(assembly, handlers);
+                var handlers = FetchHandlers(assembly);
+                foreach (var handler in handlers)
+                {
+                    yield return handler;
+                }
             }
-
-            return handlers;
         }
 
-        private void AppendPotentialHandlers(Assembly assembly, ICollection<Type> handlers)
+        private static IEnumerable<Type> FetchHandlers(Assembly assembly)
         {
             var assemblyName = assembly.GetName().Name;
 
             // Skip any assemblies that we don't anticipate finding anything in.
             if (IgnoredAssemblies.Contains(assemblyName))
-            {
-                return;
-            }
+			{ 
+				yield break;
+			}
 
-            int typeCount = 0;
+            Type[] types = new Type[0];
             try
             {
-                var types = assembly.GetTypes().ToList();
-                typeCount = types.Count;
-                foreach (var type in types)
+                types = assembly.GetTypes();
+            }
+            catch { }
+
+            foreach (var type in types)
+            {
+                Boolean isValid = false;
+                try
                 {
-                    if (RequestHandlerType.IsAssignableFrom(type) && type.IsClass && !type.IsAbstract)
-                    {
-                        handlers.Add(type);
-                    }
+                    isValid = RequestHandlerType.IsAssignableFrom(type) && type.IsClass && !type.IsAbstract;
+                }
+                catch { }
+
+                if (isValid)
+                {
+                    yield return type;
                 }
             }
-            catch (Exception ex)
-            {
-                LogMessage(ex.ToString());
-            }
-
-            var message = String.Format(
-                "Found {0} types in {1}, of which {2} were potential request handlers.", 
-                typeCount,
-                assembly.GetName().Name,
-                handlers.Count);
-
-            LogMessage(message);
         }
 
         #region Reserved Endpoint Handlers

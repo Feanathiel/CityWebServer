@@ -25,5 +25,7 @@ namespace CityWebServer.Models
         public int WeeklyTouristVisits { get; set; }
 
         public int AverageLandValue { get; set; }
+
+		public Double Pollution { get; set; }
     }
 }

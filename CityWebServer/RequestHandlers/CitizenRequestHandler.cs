@@ -17,60 +17,13 @@ namespace CityWebServer.RequestHandlers
 
         private readonly GameService _gameService;
         private readonly CitizenService _citizenService;
-
-        /// <summary>
-        /// Gets a unique identifier for this handler.
-        /// </summary>
-        public override Guid HandlerID
-        {
-            get { return new Guid("E0A1510B-0910-422F-B67A-DD2AE80EC950"); }
-        }
-
-        /// <summary>
-        /// Gets the priority of this request handler.
-        /// </summary>
-        public override int Priority
-        {
-            get { return 0; }
-        }
-
-        /// <summary>
-        /// Gets the display name of this request handler.
-        /// </summary>
-        public override String Name
-        {
-            get { return "Citizens"; }
-        }
-
-        /// <summary>
-        /// Gets the author of this request handler.
-        /// </summary>
-        public override String Author
-        {
-            get { return "Feanathiel"; }
-        }
-
-        /// <summary>
-        /// Gets the absolute path to the main page for this request handler.
-        /// </summary>
-        public override String MainPath
-        {
-            get { return "/Api/Citizen/"; }
-        }
-
-        /// <summary>
-        /// Returns a value that indicates whether this handler is capable of servicing the given request.
-        /// </summary>
-        public override bool ShouldHandle(IRequestParameters request)
-        {
-            return request.Url.AbsolutePath.StartsWith(MainPath, StringComparison.OrdinalIgnoreCase);
-        }
-
+        
         /// <summary>
         /// Creates a new instance of the <see cref="CitizenRequestHandler"/>.
         /// </summary>
         [UsedImplicitly]
-        public CitizenRequestHandler()
+        public CitizenRequestHandler(IWebServer server)
+            : base(server, new Guid("E0A1510B-0910-422F-B67A-DD2AE80EC950"), "Citizen", "Feanathiel", 0, "/Api/Citizen/")
         {
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
             {

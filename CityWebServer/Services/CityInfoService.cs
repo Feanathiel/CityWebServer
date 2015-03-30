@@ -57,6 +57,8 @@ namespace CityWebServer.Services
             {
                 districtName = _districtManager.GetDistrictName(districtID);
             }
+			
+			var pollution = Math.Round((district.m_groundData.m_finalPollution / (Double) byte.MaxValue), 2);
 
             var model = new DistrictInfo
             {
@@ -68,6 +70,7 @@ namespace CityWebServer.Services
                 CurrentJobs = (int)district.m_commercialData.m_finalAliveCount + (int)district.m_industrialData.m_finalAliveCount + (int)district.m_officeData.m_finalAliveCount + (int)district.m_playerData.m_finalAliveCount,
                 AvailableJobs = (int)district.m_commercialData.m_finalHomeOrWorkCount + (int)district.m_industrialData.m_finalHomeOrWorkCount + (int)district.m_officeData.m_finalHomeOrWorkCount + (int)district.m_playerData.m_finalHomeOrWorkCount,
                 AverageLandValue = district.GetLandValue(),
+				Pollution = pollution,
                 WeeklyTouristVisits = (int)district.m_tourist1Data.m_averageCount + (int)district.m_tourist2Data.m_averageCount + (int)district.m_tourist3Data.m_averageCount,
             };
 
