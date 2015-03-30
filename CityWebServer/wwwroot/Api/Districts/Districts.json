@@ -1,0 +1,21 @@
+{
+	"Name": "Sandbox",
+	"Time": "2015-03-30T09:56:00Z",
+	"GlobalDistrict":
+	{
+		"DistrictName": "City",
+		"TotalPopulationCount": 1000,
+		"TotalBuildingCount": 200,
+		"TotalVehicleCount": 130,
+		"CurrentHouseholds": 100,
+		"AvailableHouseholds": 10,
+		"CurrentJobs": 75,
+		"AvailableJobs": 12,
+		"WeeklyTouristVisits": 0,
+		"AverageLandValue": 10.25,
+		"Pollution": 0.25
+	},
+	"Districts":
+	[
+	]
+}
