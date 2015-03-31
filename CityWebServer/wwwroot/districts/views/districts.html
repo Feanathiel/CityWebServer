@@ -1,49 +1,63 @@
 ﻿<div class="container">
     <h2>Districts</h2>
-    <highchart config="chartConfig"></highchart>
+    <div ng-controller="CityInfoCtrl">
+        <highchart config="cityInfoChartConfig"></highchart>
 
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>District ID</th>
-                <th>Name</th>
-                <th>Population</th>
-                <th>Buildings</th>
-                <th>Vehicles</th>
-                <th>Households (Max)</th>
-                <th>Jobs (Max)</th>
-                <th>Weekly Tourists</th>
-                <th>Land Value</th>
-				<th>Pollution</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="district in data.Districts">
-                <td>{{district.DistrictID}}</td>
-                <td>{{district.DistrictName}}</td>
-                <td>{{district.TotalPopulationCount}}</td>
-                <td>{{district.TotalBuildingCount}}</td>
-                <td>{{district.TotalVehicleCount}}</td>
-                <td>{{district.CurrentHouseholds}} ({{district.AvailableHouseholds}})</td>
-                <td>{{district.CurrentJobs}} ({{district.AvailableJobs}})</td>
-                <td>{{district.WeeklyTouristVisits}}</td>
-                <td>{{district.AverageLandValue}}</td>
-				<td>{{district.Pollution * 100 | number: 0}}</td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td>Total</td>
-                <td>{{data.GlobalDistrict.TotalPopulationCount}}</td>
-                <td>{{data.GlobalDistrict.TotalBuildingCount}}</td>
-                <td>{{data.GlobalDistrict.TotalVehicleCount}}</td>
-                <td>{{data.GlobalDistrict.CurrentHouseholds}} ({{data.GlobalDistrict.AvailableHouseholds}})</td>
-                <td>{{data.GlobalDistrict.CurrentJobs}} ({{data.GlobalDistrict.AvailableJobs}})</td>
-                <td>{{data.GlobalDistrict.WeeklyTouristVisits}}</td>
-                <td>{{data.GlobalDistrict.AverageLandValue}}</td>
-				<td>{{data.GlobalDistrict.Pollution * 100 | number: 0}}</td>
-            </tr>
-        </tfoot>
-    </table>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>District ID</th>
+                    <th>Name</th>
+                    <th>Population</th>
+                    <th>Buildings</th>
+                    <th>Vehicles</th>
+                    <th>Households (Max)</th>
+                    <th>Jobs (Max)</th>
+                    <th>Weekly Tourists</th>
+                    <th>Land Value</th>
+                    <th>Pollution</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="district in data.Districts">
+                    <td>{{district.DistrictID}}</td>
+                    <td>{{district.DistrictName}}</td>
+                    <td>{{district.TotalPopulationCount}}</td>
+                    <td>{{district.TotalBuildingCount}}</td>
+                    <td>{{district.TotalVehicleCount}}</td>
+                    <td>{{district.CurrentHouseholds}} ({{district.AvailableHouseholds}})</td>
+                    <td>{{district.CurrentJobs}} ({{district.AvailableJobs}})</td>
+                    <td>{{district.WeeklyTouristVisits}}</td>
+                    <td>{{district.AverageLandValue}}</td>
+                    <td>{{district.Pollution * 100 | number: 0}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td>Total</td>
+                    <td>{{data.GlobalDistrict.TotalPopulationCount}}</td>
+                    <td>{{data.GlobalDistrict.TotalBuildingCount}}</td>
+                    <td>{{data.GlobalDistrict.TotalVehicleCount}}</td>
+                    <td>{{data.GlobalDistrict.CurrentHouseholds}} ({{data.GlobalDistrict.AvailableHouseholds}})</td>
+                    <td>{{data.GlobalDistrict.CurrentJobs}} ({{data.GlobalDistrict.AvailableJobs}})</td>
+                    <td>{{data.GlobalDistrict.WeeklyTouristVisits}}</td>
+                    <td>{{data.GlobalDistrict.AverageLandValue}}</td>
+                    <td>{{data.GlobalDistrict.Pollution * 100 | number: 0}}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <h3>Reasons to use cars</h3>
+    <ul>
+        <li>Im- and export</li>
+        <li>Intra - <i>city services, eg. bringing goods from industry to commercial and deathcare</i></li>
+        <li>Citizens - <i>going home, going to their jobs, leaving the area (road)</i></li>
+    </ul>
+
+    <div ng-controller="CarReasonCtrl as vm">
+        <highchart config="carReasonChartConfig"></highchart>
+    </div>
+    
 </div>

@@ -70,6 +70,9 @@
     <Compile Include="Models\Employment.cs" />
     <Compile Include="Models\PopulationGroup.cs" />
     <Compile Include="RequestHandlerPriorityComparer.cs" />
+    <Compile Include="Models\CarReasonCategory.cs" />
+    <Compile Include="Models\CarReasonReason.cs" />
+    <Compile Include="Models\CarReasons.cs" />
     <Compile Include="RequestHandlers\ServerRequestHandler.cs" />
     <Compile Include="RequestHandlers\CitizenRequestHandler.cs" />
     <Compile Include="RequestHandlers\DistrictsRequestHandler.cs" />

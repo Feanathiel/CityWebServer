@@ -7,6 +7,11 @@ define(['districts/module'], function (module) {
                 return $http.get("/Api/Districts/Districts.json").success(function (response) {
                     return response.data;
                 });
+            },
+            getCarReasons: function() {
+                return $http.get("/Api/Districts/CarReasons.json").success(function (response) {
+                    return response.data;
+                });
             }
         }
     });

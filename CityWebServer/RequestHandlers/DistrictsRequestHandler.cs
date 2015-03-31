@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using CityWebServer.Extensibility;
 using CityWebServer.Models;
 using CityWebServer.Services;
@@ -13,6 +14,8 @@ namespace CityWebServer.RequestHandlers
     /// </summary>
     public class DistrictsRequestHandler : RequestHandlerBase
     {
+        private readonly List<Func<IRequestParameters, IResponseFormatter>> _pathHandlers;
+
         private readonly GameService _gameService;
         private readonly CityInfoService _cityInfoService;
 
@@ -23,6 +26,12 @@ namespace CityWebServer.RequestHandlers
         public DistrictsRequestHandler(IWebServer server)
 			: base(server, new Guid("eeada0d0-f1d2-43b0-9595-2a6a4d917631"), "Districts", "Rychard", 0, "/Api/Districts/")
         {
+            _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
+            {
+                HandleDistricts,
+                HandleCarReasons
+            };
+
             _gameService = new GameService();
             _cityInfoService = new CityInfoService();
         }
@@ -39,6 +48,21 @@ namespace CityWebServer.RequestHandlers
         /// Handles the specified request.
         /// </summary>
         public override IResponseFormatter Handle(IRequestParameters request)
+        {
+            foreach (var pathHandler in _pathHandlers)
+            {
+                IResponseFormatter result = pathHandler(request);
+
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return NotFoundResponse();
+        }
+
+        private IResponseFormatter HandleDistricts(IRequestParameters request)
         {
             if (!request.Url.AbsolutePath.Equals(MainPath + "Districts.json", StringComparison.OrdinalIgnoreCase))
             {
@@ -76,6 +100,31 @@ namespace CityWebServer.RequestHandlers
             };
 
             return JsonResponse(cityInfo);
+        }
+
+        private IResponseFormatter HandleCarReasons(IRequestParameters request)
+        {
+            if (!request.Url.AbsolutePath.Equals(MainPath + "CarReasons.json", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            IEnumerable<CarReasonCategory> grouped = _cityInfoService.GetCarReasons();
+
+            var data = new CarReasons
+            {
+                Categories = grouped.ToList()
+            };
+
+            return JsonResponse(data);
+        }
+
+        /// <summary>
+        /// Creates a not-found response.
+        /// </summary>
+        private IResponseFormatter NotFoundResponse()
+        {
+            return PlainTextResponse(String.Empty, HttpStatusCode.NotFound);
         }
     }
 }
