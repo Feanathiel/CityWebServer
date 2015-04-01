@@ -5,6 +5,7 @@ using System.Net;
 using CityWebServer.Extensibility;
 using CityWebServer.Models;
 using CityWebServer.Services;
+using ColossalFramework.HTTP;
 using JetBrains.Annotations;
 
 namespace CityWebServer.RequestHandlers
@@ -29,7 +30,8 @@ namespace CityWebServer.RequestHandlers
             _pathHandlers = new List<Func<IRequestParameters, IResponseFormatter>>
             {
                 HandleDistricts,
-                HandleCarReasons
+                HandleCarReasons,
+                HandleVitals
             };
 
             _gameService = new GameService();
@@ -114,6 +116,54 @@ namespace CityWebServer.RequestHandlers
             var data = new CarReasons
             {
                 Categories = grouped.ToList()
+            };
+
+            return JsonResponse(data);
+        }
+
+        private IResponseFormatter HandleVitals(IRequestParameters request)
+        {
+            if (!request.Url.AbsolutePath.Equals(MainPath + "Vitals.json", StringComparison.OrdinalIgnoreCase))
+            {
+                return null;
+            }
+
+            var capacityBased = new List<VitalsValue>
+            {
+                _cityInfoService.GetElectricityValues(),
+                _cityInfoService.GetWaterValues(),
+                _cityInfoService.GetSewageValues(),
+                _cityInfoService.GetIncinerationValues(),
+                _cityInfoService.GetLandfillValues(),
+                _cityInfoService.GetHealthValues(),
+                _cityInfoService.GetCremationValues(),
+                _cityInfoService.GetElementarySchoolValues(),
+                _cityInfoService.GetHighSchoolValues(),
+                _cityInfoService.GetUniversityValues()
+            };
+
+            var percentageBased = new List<VitalsValue>
+            {
+                _cityInfoService.GetResidentialHappynessValues(),
+                _cityInfoService.GetCommercialHappynessValues(),
+                _cityInfoService.GetIndustrialHappynessValues(),
+                _cityInfoService.GetOfficeHappynessValues(),
+                _cityInfoService.GetHealth(),
+                _cityInfoService.GetWellbeing(),
+                _cityInfoService.GetCrimeRate(),
+                _cityInfoService.GetFireHazard(),
+                _cityInfoService.GetNoisePollution(),
+                _cityInfoService.GetAttractiveness(),
+                _cityInfoService.GetLeisure(),
+                _cityInfoService.GetGraduatedElementarySchool(),
+                _cityInfoService.GetGraduatedHighSchool(),
+                _cityInfoService.GetGraduatedUniversity()
+            };
+
+            var data = new
+            {
+                CapacityBased = capacityBased,
+                PercentageBased = percentageBased
             };
 
             return JsonResponse(data);

@@ -12,6 +12,11 @@ define(['districts/module'], function (module) {
                 return $http.get("/Api/Districts/CarReasons.json").success(function (response) {
                     return response.data;
                 });
+            },
+            getVitals: function() {
+                return $http.get("/Api/Districts/Vitals.json").success(function (response) {
+                    return response.data;
+                });
             }
         }
     });

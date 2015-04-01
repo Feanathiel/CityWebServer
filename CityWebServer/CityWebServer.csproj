@@ -84,6 +84,7 @@
     <Compile Include="Models\AgeDistribution.cs" />
     <Compile Include="Services\GameService.cs" />
     <Compile Include="Models\EducationEmployment.cs" />
+    <Compile Include="Models\VitalsValue.cs" />
     <Compile Include="UserModInfo.cs" />
     <Compile Include="WebServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

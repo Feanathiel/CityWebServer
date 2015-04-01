@@ -1,53 +1,87 @@
 ﻿<div class="container">
     <h2>Districts</h2>
+
+    <h3>Vitals</h3>
+    <div ng-controller="VitalsCtrl as vm">
+        <div class="row">
+            <div class="col-md-6" ng-repeat="items in CapacityBased | partition:(Math.ceil(CapacityBased.length/2))">
+                <table class="table table-bordered table-condensed">
+                    <tr ng-repeat-start="item in items">
+                        <td class="expand" rowspan="2">{{item.Name}} <span ng-show="item.Unit != null">({{item.Unit}})</span></td>
+                        <td class="shrink">{{item.NeedName}}</td>
+                        <td class="shrink">{{item.Need}}</td>
+                        <td class="shrink text-center {{GetColorClass(item)}}" rowspan="2">{{item.Percentage}}%</td>
+                    </tr>
+                    <tr ng-repeat-end>
+                        <td class="shrink">{{item.CapacityName}}</td>
+                        <td class="shrink">{{item.Capacity}}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6" ng-repeat="items in PercentageBased | partition:(Math.ceil(PercentageBased.length/2))">
+                <table class="table table-bordered table-condensed">
+                    <tr ng-repeat="item in items">
+                        <td class="expand">{{item.Name}}</td>
+                        <td class="shrink {{GetColorClass(item)}}">{{item.Percentage}}%</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <h3>Districts</h3>
     <div ng-controller="CityInfoCtrl">
         <highchart config="cityInfoChartConfig"></highchart>
 
         <table class="table table-bordered table-striped">
             <thead>
-                <tr>
-                    <th>District ID</th>
-                    <th>Name</th>
-                    <th>Population</th>
-                    <th>Buildings</th>
-                    <th>Vehicles</th>
-                    <th>Households (Max)</th>
-                    <th>Jobs (Max)</th>
-                    <th>Weekly Tourists</th>
-                    <th>Land Value</th>
-                    <th>Pollution</th>
-                </tr>
+            <tr>
+                <th>District ID</th>
+                <th>Name</th>
+                <th>Population</th>
+                <th>Buildings</th>
+                <th>Vehicles</th>
+                <th>Households (Max)</th>
+                <th>Jobs (Max)</th>
+                <th>Weekly Tourists</th>
+                <th>Land Value</th>
+                <th>Pollution</th>
+            </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="district in data.Districts">
-                    <td>{{district.DistrictID}}</td>
-                    <td>{{district.DistrictName}}</td>
-                    <td>{{district.TotalPopulationCount}}</td>
-                    <td>{{district.TotalBuildingCount}}</td>
-                    <td>{{district.TotalVehicleCount}}</td>
-                    <td>{{district.CurrentHouseholds}} ({{district.AvailableHouseholds}})</td>
-                    <td>{{district.CurrentJobs}} ({{district.AvailableJobs}})</td>
-                    <td>{{district.WeeklyTouristVisits}}</td>
-                    <td>{{district.AverageLandValue}}</td>
-                    <td>{{district.Pollution * 100 | number: 0}}</td>
-                </tr>
+            <tr ng-repeat="district in data.Districts">
+                <td>{{district.DistrictID}}</td>
+                <td>{{district.DistrictName}}</td>
+                <td>{{district.TotalPopulationCount}}</td>
+                <td>{{district.TotalBuildingCount}}</td>
+                <td>{{district.TotalVehicleCount}}</td>
+                <td>{{district.CurrentHouseholds}} ({{district.AvailableHouseholds}})</td>
+                <td>{{district.CurrentJobs}} ({{district.AvailableJobs}})</td>
+                <td>{{district.WeeklyTouristVisits}}</td>
+                <td>{{district.AverageLandValue}}</td>
+                <td>{{district.Pollution * 100 | number: 0}}</td>
+            </tr>
             </tbody>
             <tfoot>
-                <tr>
-                    <td></td>
-                    <td>Total</td>
-                    <td>{{data.GlobalDistrict.TotalPopulationCount}}</td>
-                    <td>{{data.GlobalDistrict.TotalBuildingCount}}</td>
-                    <td>{{data.GlobalDistrict.TotalVehicleCount}}</td>
-                    <td>{{data.GlobalDistrict.CurrentHouseholds}} ({{data.GlobalDistrict.AvailableHouseholds}})</td>
-                    <td>{{data.GlobalDistrict.CurrentJobs}} ({{data.GlobalDistrict.AvailableJobs}})</td>
-                    <td>{{data.GlobalDistrict.WeeklyTouristVisits}}</td>
-                    <td>{{data.GlobalDistrict.AverageLandValue}}</td>
-                    <td>{{data.GlobalDistrict.Pollution * 100 | number: 0}}</td>
-                </tr>
+            <tr>
+                <td></td>
+                <td>Total</td>
+                <td>{{data.GlobalDistrict.TotalPopulationCount}}</td>
+                <td>{{data.GlobalDistrict.TotalBuildingCount}}</td>
+                <td>{{data.GlobalDistrict.TotalVehicleCount}}</td>
+                <td>{{data.GlobalDistrict.CurrentHouseholds}} ({{data.GlobalDistrict.AvailableHouseholds}})</td>
+                <td>{{data.GlobalDistrict.CurrentJobs}} ({{data.GlobalDistrict.AvailableJobs}})</td>
+                <td>{{data.GlobalDistrict.WeeklyTouristVisits}}</td>
+                <td>{{data.GlobalDistrict.AverageLandValue}}</td>
+                <td>{{data.GlobalDistrict.Pollution * 100 | number: 0}}</td>
+            </tr>
             </tfoot>
         </table>
     </div>
+
+    
 
     <h3>Reasons to use cars</h3>
     <ul>
@@ -59,5 +93,5 @@
     <div ng-controller="CarReasonCtrl as vm">
         <highchart config="carReasonChartConfig"></highchart>
     </div>
-    
+
 </div>
